@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4a90e2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png" type="image/png">
+<title>Hesap Makinesi – Merkez & Dairesel</title>
+<style>
+:root {
+    --bg: #f5f7fa;
+    --card-bg: #ffffff;
+    --primary: #4a90e2;
+    --secondary: #e9ecef;
+    --text-main: #1d1d1f;
+    --text-sub: #86868b;
+    --btn-shadow: #d1d9e6;
+    --transition: .2s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text-main);
+    overflow: hidden;
+}
+
+.wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    height: 90vh;
+    background: var(--card-bg);
+}
+
+.view {
+    position: absolute;
+    inset: 0;
+    background: var(--card-bg);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+    display: flex;
+    flex-direction: column;
+}
+
+.view.off-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
+.view.off-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+.view.active { transform: translateX(0); opacity: 1; }
+
+.display-container {
+    height: 115px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid var(--secondary);
+}
+
+.history {
+    font-size: 18px;
+    color: var(--text-sub);
+    text-align: right;
+    min-height: 24px;
+    margin-bottom: 1px;
+}
+
+.display {
+    font-size: 54px;
+    font-weight: 700;
+    text-align: right;
+    color: var(--text-main);
+    overflow: hidden;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.button {
+    height: 65px;
+    background: #fff;
+    border: 1.5px solid var(--secondary);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-main);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+    transition: all 0.02s;
+    cursor: pointer;
+}
+
+.button:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--secondary);
+    background: #f0f0f0;
+}
+
+.operator { border-color: var(--primary); color: var(--primary); }
+.function { color: #eb4d4b; }
+.equals { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 0 #357abd; }
+.equals:active { background: #357abd; box-shadow: 0 1px 0 #357abd; }
+
+.mode-btn {
+    grid-column: span 2;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    height: 50px;
+    box-shadow: 0 4px 0 #357abd;
+}
+
+.mode-header {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--secondary);
+}
+
+.mode-title { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+form.inner-form {
+    padding: 15px 20px;
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.inner-form label {
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-main);
+    text-transform: uppercase;
+    margin-bottom: -8px;
+}
+
+.inner-form > input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-main);
+    background: #fff;
+}
+
+.result-card {
+    background: var(--primary);
+    color: #fff;
+    padding: 15px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(74, 144, 226, 0.3);
+}
+
+.nav-btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    box-shadow: 0 3px 0 #357abd;
+}
+
+/* ===== RADIO STYLES (KOMPAKT) ===== */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.radio-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+.radio-option:hover { background: #f0f0f0; }
+
+.radio-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2.5px solid #ccc;
+    display: inline-block;
+    flex-shrink: 0;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+}
+
+.radio-option input[type="radio"] { display: none; }
+
+.radio-option input[type="radio"]:checked ~ .radio-dot {
+    background: var(--accent, #2ecc71);
+    border-color: var(--accent, #2ecc71);
+}
+
+.radio-option input[type="radio"]:checked ~ .radio-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+/* Özel input - Özel yazısının hemen yanında */
+.radio-custom-input {
+    width: 55px;
+    padding: 6px 4px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid var(--secondary);
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: var(--text-sub);
+    -moz-appearance: textfield;
+    margin-left: 2px;
+    vertical-align: middle;
+}
+
+.radio-custom-input::-webkit-outer-spin-button,
+.radio-custom-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.radio-custom-input:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.radio-custom-input:not(:disabled) {
+    background: #fff;
+    border-color: var(--primary);
+    color: var(--text-main);
+    opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div id="calc-view" class="view active">
+    <div class="display-container">
+        <div class="history" id="history"></div>
+        <div class="display" id="display">0</div>
+    </div>
+    <div class="buttons">
+      <div class="button function" data-action="clear">AC</div>
+      <div class="button function" data-action="backspace">⌫</div>
+      <div class="button function" data-action="sign">±</div>
+      <div class="button operator" data-action="divide">÷</div>
+
+      <div class="button number" data-num="7">7</div>
+      <div class="button number" data-num="8">8</div>
+      <div class="button number" data-num="9">9</div>
+      <div class="button operator" data-action="multiply">×</div>
+
+      <div class="button number" data-num="4">4</div>
+      <div class="button number" data-num="5">5</div>
+      <div class="button number" data-num="6">6</div>
+      <div class="button operator" data-action="subtract">−</div>
+
+      <div class="button number" data-num="1">1</div>
+      <div class="button number" data-num="2">2</div>
+      <div class="button number" data-num="3">3</div>
+      <div class="button operator" data-action="add">+</div>
+
+      <div class="button number" data-num="0">0</div>
+      <div class="button decimal" data-action="decimal">.</div>
+      <div class="button equals" data-action="equals">=</div>
+      <div class="button function" data-action="backspace" style="font-size:18px">DEL</div>
+
+      <div class="button mode-btn" id="open-merkez">MERKEZ</div>
+      <div class="button mode-btn" id="open-dairesel" style="background:#2ecc71; box-shadow: 0 4px 0 #27ae60;">DAİRESEL</div>
+    </div>
+  </div>
+
+  <!-- ===== MERKEZ VIEW ===== -->
+  <div id="merkez-view" class="view off-right">
+    <div class="mode-header">
+        <button class="nav-btn" id="close-merkez"><span style="font-size: 20px;">👈</span></button>
+        <div class="mode-title">Merkez Mesafe</div>
+        <button class="nav-btn" id="merkez-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
+    </div>
+    <form class="inner-form" onsubmit="return false">
+
+      <label>Tam Çap</label>
+      <div class="radio-group" style="--accent:#4a90e2;">
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="2.5" checked>
+          <span class="radio-dot"></span> M3
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="3.2">
+          <span class="radio-dot"></span> M4
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="4.2">
+          <span class="radio-dot"></span> M5
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="5">
+          <span class="radio-dot"></span> M6
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="5.2">
+          <span class="radio-dot"></span> 1/4"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="8">
+          <span class="radio-dot"></span> 3/8"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="3.2">
+          <span class="radio-dot"></span> 3,2
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tam-cap" value="custom">
+          <span class="radio-dot"></span> Özel
+          <input type="number" id="tam-cap-custom" class="radio-custom-input" placeholder="0" step="any" inputmode="decimal" disabled>
+        </label>
+      </div>
+
+      <label>Merkez Ölçüsü (mm)</label>
+      <input type="number" id="merkez-olcusu" placeholder="0" step="any" inputmode="decimal">
+
+      <div class="result-card">
+        <div style="font-size:11px; margin-bottom:4px">HESAPLANAN SONUÇ</div>
+        <span id="merkez-sonuc" style="font-size:30px; font-weight:800">-</span>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===== DAİRESEL VIEW ===== -->
+  <div id="dairesel-view" class="view off-right">
+    <div class="mode-header">
+        <button class="nav-btn" id="close-dairesel"><span style="font-size: 20px;">👈</span></button>
+        <div class="mode-title">Dairesel Mesafe</div>
+        <button class="nav-btn" id="dairesel-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
+    </div>
+    <form class="inner-form" onsubmit="return false">
+
+      <label>Delik Sayısı</label>
+      <div class="radio-group" style="--accent:#2ecc71;">
+        <label class="radio-option">
+          <input type="radio" name="hole-count" value="2" checked>
+          <span class="radio-dot"></span> 2
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-count" value="3">
+          <span class="radio-dot"></span> 3
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-count" value="custom">
+          <span class="radio-dot"></span> Özel
+          <input type="number" id="hole-count-custom" class="radio-custom-input" placeholder="0" min="2" inputmode="numeric" disabled>
+        </label>
+      </div>
+
+      <label>Merkezden Uzaklık (R) (mm)</label>
+      <input type="number" id="pcd-radius" placeholder="0" step="any" inputmode="decimal">
+
+      <label>Delik Çapı</label>
+      <div class="radio-group" style="--accent:#4a90e2;">
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="2.5" checked>
+          <span class="radio-dot"></span> M3
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="3.2">
+          <span class="radio-dot"></span> M4
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="4.2">
+          <span class="radio-dot"></span> M5
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="5">
+          <span class="radio-dot"></span> M6
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="5.2">
+          <span class="radio-dot"></span> 1/4"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="8">
+          <span class="radio-dot"></span> 3/8"
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="hole-diam" value="custom">
+          <span class="radio-dot"></span> Özel
+          <input type="number" id="hole-diam-custom" class="radio-custom-input" placeholder="0" step="any" inputmode="decimal" disabled>
+        </label>
+      </div>
+
+      <div class="result-card">
+        <div style="font-size:11px">MERKEZDEN MERKEZE</div>
+        <span id="center-to-center" style="font-size:22px; font-weight:800">-</span>
+      </div>
+      <div class="result-card" style="background:#2ecc71; box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);">
+        <div style="font-size:11px">DIŞTAN DIŞA</div>
+        <span id="outer-distance" style="font-size:22px; font-weight:800">-</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const views={
+  calc:document.getElementById('calc-view'),
+  merkez:document.getElementById('merkez-view'),
+  dairesel:document.getElementById('dairesel-view')
+};
+
+function goTo(target){
+  Object.values(views).forEach(v=>v.classList.remove('active','off-left','off-right'));
+  if(target==='calc'){views.calc.classList.add('active');views.merkez.classList.add('off-right');views.dairesel.classList.add('off-right');}
+  else if(target==='merkez'){views.calc.classList.add('off-left');views.merkez.classList.add('active');views.dairesel.classList.add('off-right');}
+  else if(target==='dairesel'){views.calc.classList.add('off-left');views.dairesel.classList.add('active');views.merkez.classList.add('off-right');}
+}
+
+document.getElementById('open-merkez').onclick=()=>goTo('merkez');
+document.getElementById('open-dairesel').onclick=()=>goTo('dairesel');
+document.getElementById('close-merkez').onclick=()=>goTo('calc');
+document.getElementById('close-dairesel').onclick=()=>goTo('calc');
+
+class CalcEngine{
+  constructor(displayEl, historyEl){
+    this.displayEl=displayEl; this.historyEl=historyEl; this.current='0'; this.previous=null; this.operation=null; this.resetScreen=false; this.update();
+  }
+  update(){
+    let[int,dec]=this.current.split('.'); int=int.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    this.displayEl.textContent=dec?int+'.'+dec:int;
+    this.historyEl.textContent = this.operation ? `${this.previous} ${this.getOpSym(this.operation)}` : '';
+  }
+  getOpSym(op){
+      const syms = {add:'+', subtract:'-', multiply:'×', divide:'÷'};
+      return syms[op] || '';
+  }
+  clear(){this.current='0';this.previous=this.operation=null;this.resetScreen=false;this.update();}
+  sign(){this.current=(parseFloat(this.current)*-1).toString();this.update();}
+  backspace(){
+    if(this.current==='Error'){this.clear();return;}
+    if(this.current.length===1||(this.current.length===2&&this.current.startsWith('-')))this.current='0';
+    else this.current=this.current.slice(0,-1);this.update();
+  }
+  append(n){
+    if(this.resetScreen || this.current==='0'){this.current=n;this.resetScreen=false;}
+    else this.current+=n;this.update();
+  }
+  decimal(){
+    if(this.resetScreen){this.current='0.';this.resetScreen=false;}
+    else if(!this.current.includes('.'))this.current+='.';this.update();
+  }
+  chooseOp(op){
+    if(this.operation)this.calculate();
+    this.previous=this.current;this.operation=op;this.resetScreen=true;this.update();
+  }
+  calculate(){
+    if(!this.operation||this.previous===null)return;
+    const prev=parseFloat(this.previous),cur=parseFloat(this.current);
+    let result;
+    switch(this.operation){
+      case'add':result=prev+cur;break;
+      case'subtract':result=prev-cur;break;
+      case'multiply':result=prev*cur;break;
+      case'divide':result=cur===0?'Error':prev/cur;break;
+    }
+    this.current=result.toString();this.operation=null;this.resetScreen=true;this.update();
+  }
+}
+
+const mainCalc=new CalcEngine(document.getElementById('display'), document.getElementById('history'));
+document.getElementById('calc-view').addEventListener('click',e=>{
+  const btn=e.target.closest('.button'); if(!btn)return;
+  const action=btn.dataset.action,num=btn.dataset.num;
+  if(num!==undefined)mainCalc.append(num);
+  else switch(action){
+    case'clear':mainCalc.clear();break;
+    case'backspace':mainCalc.backspace();break;
+    case'sign':mainCalc.sign();break;
+    case'decimal':mainCalc.decimal();break;
+    case'add':case'subtract':case'multiply':case'divide':mainCalc.chooseOp(action);break;
+    case'equals':mainCalc.calculate();break;
+  }
+});
+
+/* ===== MERKEZ HESAP ===== */
+function merkezHesap(){
+  let tamCap;
+  const tamCapChecked=document.querySelector('input[name="tam-cap"]:checked');
+  if(!tamCapChecked){ tamCap=NaN; }
+  else if(tamCapChecked.value==='custom'){
+    tamCap=parseFloat(document.getElementById('tam-cap-custom').value);
+  } else {
+    tamCap=parseFloat(tamCapChecked.value);
+  }
+  const merk=parseFloat(document.getElementById('merkez-olcusu').value);
+  document.getElementById('merkez-sonuc').textContent=(isNaN(tamCap)||isNaN(merk))?'-':(merk-tamCap/2).toFixed(2) + " mm";
+}
+
+document.querySelectorAll('input[name="tam-cap"]').forEach(r=>{
+  r.addEventListener('change',function(){
+    const customInput=document.getElementById('tam-cap-custom');
+    if(this.value==='custom'){
+      customInput.disabled=false;
+      customInput.focus();
+    } else {
+      customInput.disabled=true;
+      customInput.value='';
+    }
+    merkezHesap();
+  });
+});
+
+document.getElementById('tam-cap-custom').oninput=merkezHesap;
+document.getElementById('merkez-olcusu').oninput=merkezHesap;
+
+document.getElementById('merkez-temizle').onclick=()=>{
+  document.querySelector('input[name="tam-cap"][value="2.5"]').checked=true;
+  document.getElementById('tam-cap-custom').value='';
+  document.getElementById('tam-cap-custom').disabled=true;
+  document.getElementById('merkez-olcusu').value='';
+  document.getElementById('merkez-sonuc').textContent='-';
+};
+
+/* ===== DAİRESEL HESAP ===== */
+function daireselHesap(){
+  const radius=parseFloat(document.getElementById('pcd-radius').value);
+
+  let count;
+  const countChecked=document.querySelector('input[name="hole-count"]:checked');
+  if(!countChecked){ count=NaN; }
+  else if(countChecked.value==='custom'){
+    count=parseFloat(document.getElementById('hole-count-custom').value);
+  } else {
+    count=parseFloat(countChecked.value);
+  }
+
+  let diam;
+  const diamChecked=document.querySelector('input[name="hole-diam"]:checked');
+  if(!diamChecked){ diam=NaN; }
+  else if(diamChecked.value==='custom'){
+    diam=parseFloat(document.getElementById('hole-diam-custom').value);
+  } else {
+    diam=parseFloat(diamChecked.value);
+  }
+
+  if(isNaN(count)||isNaN(radius)||isNaN(diam)||count<2){
+    document.getElementById('center-to-center').textContent='-';
+    document.getElementById('outer-distance').textContent='-';
+    return;
+  }
+  const center2=2*radius*Math.sin((180/count)*(Math.PI/180));
+  document.getElementById('center-to-center').textContent=center2.toFixed(2)+' mm';
+  document.getElementById('outer-distance').textContent=(center2+diam).toFixed(2)+' mm';
+}
+
+document.getElementById('pcd-radius').oninput=daireselHesap;
+
+document.querySelectorAll('input[name="hole-count"]').forEach(r=>{
+  r.addEventListener('change',function(){
+    const customInput=document.getElementById('hole-count-custom');
+    if(this.value==='custom'){
+      customInput.disabled=false;
+      customInput.focus();
+    } else {
+      customInput.disabled=true;
+      customInput.value='';
+    }
+    daireselHesap();
+  });
+});
+
+document.getElementById('hole-count-custom').oninput=daireselHesap;
+
+document.querySelectorAll('input[name="hole-diam"]').forEach(r=>{
+  r.addEventListener('change',function(){
+    const customInput=document.getElementById('hole-diam-custom');
+    if(this.value==='custom'){
+      customInput.disabled=false;
+      customInput.focus();
+    } else {
+      customInput.disabled=true;
+      customInput.value='';
+    }
+    daireselHesap();
+  });
+});
+
+document.getElementById('hole-diam-custom').oninput=daireselHesap;
+
+document.getElementById('dairesel-temizle').onclick=()=>{
+  document.getElementById('pcd-radius').value='';
+  document.querySelector('input[name="hole-count"][value="2"]').checked=true;
+  document.getElementById('hole-count-custom').value='';
+  document.getElementById('hole-count-custom').disabled=true;
+  document.querySelector('input[name="hole-diam"][value="2.5"]').checked=true;
+  document.getElementById('hole-diam-custom').value='';
+  document.getElementById('hole-diam-custom').disabled=true;
+  daireselHesap();
+};
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker Kayıtlı', reg))
+      .catch(err => console.log('Hata:', err));
+  });
+}
+</script>
+</body>
+</html>
