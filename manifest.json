@@ -1,11 +1,9 @@
 {
   "name": "EDEL Üretim Araçları",
   "short_name": "EDEL",
-  "description": "Tezgah panosu, depo, hesap makinesi ve notlar",
-  "start_url": "/Edelmmt/index.html",
-  "scope": "/Edelmmt/",
+  "start_url": "index.html",
+  "scope": ".",
   "display": "standalone",
   "theme_color": "#1976D2",
-  "background_color": "#ffffff",
-  "orientation": "portrait"
+  "background_color": "#ffffff"
 }
