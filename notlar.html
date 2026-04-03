@@ -40,10 +40,45 @@ button:active { transform: scale(0.97); }
 .tarih-etiket { font-size: 8px; color: #2b7be4; letter-spacing: 0.5px; }
 .tarih-deger { font-size: 10px; }
 
-.ana-icerik { padding: 12px; }
-.arama-kutusu {
-    width: 100%; padding: 10px 20px; font-size: 15px; border: 3px solid #ddd;
-    border-radius: 50px; margin-bottom: 20px; background-color: white;
+/* YENİ ANA SAYFA STICKY BANNER (tema.txt'den birebir) */
+.ana-sticky-banner {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #1976D2;
+    border-bottom: 3px solid #ffffff;
+    padding: 1rem 1.5rem;
+}
+.ana-banner-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+.ana-banner-title {
+    font-size: 2.0rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+}
+/* Arama inputu orijinal stilini koruyor */
+#anaAramaInput {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 15px;
+    border: 3px solid #ddd;
+    border-radius: 50px;
+    background-color: white;
+}
+/* Buton orijinal stilini koruyor */
+#anaYeniEkleBtn {
+    width: 100%;
+}
+
+.ana-icerik {
+    padding: 12px;
 }
 
 .baslik-item {
@@ -198,11 +233,15 @@ display: flex;
 
 <!-- ANA SAYFA -->
 <div id="anaSayfa" class="sayfa aktif">
-    <div class="ana-icerik">
-        <input type="text" id="aramaInput" class="arama-kutusu" placeholder="🔍 Parça adı..." autocomplete="off">
-        <div style="margin-bottom: 25px;">
-            <button class="btn-mavi" id="yeniEkleBtn" style="width: 100%;">➕ Yeni Parça Ekle</button>
+    <!-- YENİ STICKY BANNER (tema.txt stilinde) -->
+    <div class="ana-sticky-banner">
+        <div class="ana-banner-content">
+            <div class="ana-banner-title">📌 NOTLAR</div>
+            <input type="text" id="anaAramaInput" class="arama-kutusu" placeholder="🔍 Parça adı..." autocomplete="off">
+            <button class="btn-mavi" id="anaYeniEkleBtn" style="width: 100%;">➕ Yeni Parça Ekle</button>
         </div>
+    </div>
+    <div class="ana-icerik">
         <div id="baslikListesi" style="margin-bottom: 100px;"></div>
     </div>
 </div>
@@ -428,7 +467,7 @@ function guncellemeTarihiSet(kayit) {
 }
 
 function anaSayfayiGuncelle() {
-    const arama = document.getElementById('aramaInput').value.toUpperCase().trim();
+    const arama = document.getElementById('anaAramaInput').value.toUpperCase().trim();
     let filtrelenmis = kayitlar.filter(k => k.baslik && k.baslik.toUpperCase().includes(arama));
     filtrelenmis.sort((a, b) => new Date(b.guncelleme) - new Date(a.guncelleme));
     
@@ -470,77 +509,6 @@ function resimUrlAl(resim) {
     if (resim && typeof resim === 'object' && resim.url) return resim.url;
     return '';
 }
-
-// Verileri ayır (kullanilan ve cop)
-function verileriAyir() {
-    kullanilanResimler = [];
-    copResimler = [];
-    
-    tumResimler.forEach(item => {
-        if (item.tip === 'aktif') {
-            kullanilanResimler.push(item);
-        } else if (item.tip === 'cop') {
-            copResimler.push(item);
-        }
-    });
-    
-    // Aktif sekmeye göre göster
-    resimleriGoster();
-    istatistikGuncelle();
-}
-
-// Tüm resimleri yükle
-async function resimleriYukle() {
-    yukleniyorDiv.style.display = 'block';
-    resimListesi.innerHTML = '';
-    tumResimler = [];
-    
-    try {
-        const querySnapshot = await getDocs(collection(db, "notlar"));
-        
-        querySnapshot.forEach((docSnap) => {
-            const not = { id: Number(docSnap.id), ...docSnap.data() };
-            
-            // 1. AKTİF RESİMLER (resimler listesindekiler)
-            if (not.resimler && not.resimler.length > 0) {
-                not.resimler.forEach((resim, index) => {
-                    tumResimler.push({
-                        notId: not.id,
-                        notBaslik: not.baslik || 'BAŞLIKSIZ',
-                        resim: resim,
-                        index: index,
-                        not: not,
-                        tip: 'aktif'
-                    });
-                });
-            }
-            
-            // 2. SİLİNMİŞ RESİMLER (ÇÖP)
-            if (not.silinmisResimler && not.silinmisResimler.length > 0) {
-                not.silinmisResimler.forEach((silinmis, index) => {
-                    tumResimler.push({
-                        notId: not.id,
-                        notBaslik: not.baslik || 'BAŞLIKSIZ (SİLİNMİŞ)',
-                        resim: { delete_url: silinmis.delete_url },
-                        index: index,
-                        not: not,
-                        tip: 'cop'
-                    });
-                });
-            }
-        });
-        
-        // Verileri ayır
-        verileriAyir();
-        
-    } catch (e) {
-        console.error('Yükleme hatası:', e);
-        mesajGoster('❌ Veriler yüklenemedi!', true);
-    } finally {
-        yukleniyorDiv.style.display = 'none';
-    }
-}
-
 
 
 function detaySayfasiYukle(id) {
@@ -653,11 +621,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         sayfaGoster('anaSayfa');
     }
 
-    // Arama
-    document.getElementById('aramaInput').addEventListener('input', anaSayfayiGuncelle);
+    // Arama (yeni input ID'si ile)
+    document.getElementById('anaAramaInput').addEventListener('input', anaSayfayiGuncelle);
 
-    // Yeni ekle (BOŞ KART ENGELLEMELİ)
-    document.getElementById('yeniEkleBtn').addEventListener('click', async () => {
+    // Yeni ekle (yeni buton ID'si ile)
+    document.getElementById('anaYeniEkleBtn').addEventListener('click', async () => {
         const yeniId = Date.now();
         const yeniKayit = { 
             id: yeniId, 
@@ -683,7 +651,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         history.pushState(null, null, location.href); 
     });
 
-// Banner sil (YENİ - delete_url'ler kalsın)
+// Banner sil
 document.getElementById('bannerSilBtn').addEventListener('click', () => {
     onayGoster('🗑️ KAYDI TAMAMEN SİL?', async (onay) => {
         if (onay) {
@@ -787,7 +755,7 @@ document.getElementById('bannerSilBtn').addEventListener('click', () => {
         history.pushState(null, null, location.href);
     });
 
-    // Galeriden Seç (YENİ - delete_url'li)
+    // Galeriden Seç
     document.getElementById('galeriSec').addEventListener('click', () => {
         document.getElementById('secenekModal').classList.remove('aktif');
         
@@ -826,7 +794,7 @@ document.getElementById('bannerSilBtn').addEventListener('click', () => {
         input.click();
     });
 
-    // Kamera ile Çek (YENİ - delete_url'li)
+    // Kamera ile Çek
     document.getElementById('kameraSec').addEventListener('click', () => {
         document.getElementById('secenekModal').classList.remove('aktif');
         
@@ -876,7 +844,7 @@ document.getElementById('bannerSilBtn').addEventListener('click', () => {
         document.getElementById('secenekModal').classList.remove('aktif'); 
     });
 
-    // GALERİ İŞLEMLERİ (YENİ - delete_url'li silme)
+    // GALERİ İŞLEMLERİ
     document.getElementById('galeriKapat').addEventListener('click', () => { 
         document.getElementById('galeriModal').classList.remove('aktif'); 
     });
