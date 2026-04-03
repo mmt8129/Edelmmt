@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>EDEL | Üretim Araçları</title>
+    
+    <!-- PWA Meta Etiketleri -->
     <meta name="theme-color" content="#1976D2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="EDEL">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <style>
         * {
             margin: 0;
@@ -117,6 +122,23 @@
             opacity: 0.7;
         }
 
+        /* Offline bildirimi */
+        .offline-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 200;
+            display: none;
+            white-space: nowrap;
+        }
+
         /* Mobil için uyarlama */
         @media (max-width: 600px) {
             .sticky-banner {
@@ -140,6 +162,11 @@
             }
             .app-icon {
                 font-size: 1.6rem;
+            }
+            .offline-toast {
+                font-size: 10px;
+                bottom: 15px;
+                padding: 6px 12px;
             }
         }
     </style>
@@ -186,7 +213,7 @@
             </button>
 
             <!-- Hesap Makinesi -->
-            <button class="app-btn" onclick="goTo('hespmak.html')">
+            <button class="app-btn" onclick="goTo('hesap.html')">
                 <div class="app-icon">🧮</div>
                 <div class="app-text">
                     <div class="app-name">HESAP MAKİNESİ</div>
@@ -205,6 +232,9 @@
         </div>
     </div>
 
+    <!-- Offline bildirimi -->
+    <div id="offlineToast" class="offline-toast">📡 İnternet bağlantısı yok</div>
+
     <script>
         // Aynı pencerede yönlendirme (Android geri tuşu ile ana sayfaya dönülür)
         function goTo(page) {
@@ -216,12 +246,67 @@
             window.open(url, '_blank');
         }
 
-        // Service Worker (PWA için)
+        // Offline kontrolü ve bildirimi
+        function showOfflineMessage() {
+            const toast = document.getElementById('offlineToast');
+            if (toast) {
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // İnternet bağlantısını kontrol et
+        window.addEventListener('online', () => {
+            console.log('Çevrimiçi oldu');
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log('Çevrimdışı oldu');
+            showOfflineMessage();
+        });
+
+        // Sayfa yüklendiğinde offline ise bildir
+        if (!navigator.onLine) {
+            showOfflineMessage();
+        }
+
+        // Service Worker kaydı (PWA)
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('SW kaydedildi:', reg))
-                .catch(err => console.log('SW hatası:', err));
+                .then(reg => {
+                    console.log('✅ Service Worker kaydedildi:', reg.scope);
+                    
+                    // SW güncellemesini kontrol et
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('🔄 Yeni güncelleme mevcut, sayfayı yenileyin');
+                            }
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.log('❌ Service Worker hatası:', err);
+                });
+            
+            // SW aktif mi kontrol et
+            navigator.serviceWorker.ready.then(() => {
+                console.log('🎯 Service Worker aktif ve hazır');
+            });
         }
+
+        // PWA kurulum olayı (isteğe bağlı)
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('📱 PWA kurulumu mümkün');
+            
+            // İstersen burada bir buton gösterip kurulumu tetikleyebilirsin
+        });
     </script>
 </body>
 </html>
