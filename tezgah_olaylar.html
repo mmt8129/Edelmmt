@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>TEZGAH OLAYLARI | edelkrone</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Inter', sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .sticky-banner {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #1976D2;
+            border-bottom: 3px solid #ffffff;
+            padding: 1rem 1.5rem;
+        }
+
+        .banner-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .title-area {
+            text-align: center;
+        }
+
+        .title-area h1 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .title-area p {
+            font-size: 1.0rem;
+            color: #ffffff;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .bench-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Normal kart - Mavi zemin */
+        .bench-card {
+            background: #1976D2;
+            border-radius: 1.2rem;
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid #1976D2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            user-select: none;
+            color: #ffffff;
+        }
+
+        .bench-card:active {
+            transform: scale(0.96);
+        }
+
+        .bench-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .bench-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .bench-cross {
+            font-size: 1.5rem;
+            display: inline-block;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 900px) {
+            .bench-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+            }
+            .title-area h1 {
+                font-size: 1.6rem;
+            }
+            .title-area p {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .bench-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+            .bench-card {
+                padding: 0.8rem 0.4rem;
+            }
+            .bench-name {
+                font-size: 1rem;
+            }
+            .bench-icon {
+                font-size: 1.5rem;
+                margin-bottom: 0.3rem;
+            }
+            .bench-cross {
+                font-size: 1.2rem;
+            }
+            .title-area h1 {
+                font-size: 1.2rem;
+            }
+            .title-area p {
+                font-size: 0.7rem;
+            }
+            .sticky-banner {
+                padding: 0.8rem 1rem;
+            }
+            .dashboard {
+                margin: 1rem auto;
+                padding: 0 1rem;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .bench-grid {
+                gap: 0.6rem;
+            }
+            .bench-name {
+                font-size: 0.9rem;
+            }
+            .bench-icon {
+                font-size: 1.3rem;
+            }
+            .bench-cross {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sticky-banner">
+    <div class="banner-content">
+        <div class="title-area">
+            <h1>⚙️ TEZGAH OLAYLARI</h1>
+            <p>TEZGAHLAR</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard" id="dashboard"></div>
+
+<script>
+    // Linkler.txt'deki veriler - etiket ve URL eşlemesi
+    // Sıralama: 3A, 4A, 4B, 4C, 3B, 3C, 3D, 5D, 5C, TORNA1, TORNA2, TORNA3, TORNA4, 3E, K1, 5I, 5H, 5G, 5F, 5E, TESVİYE
+    const benchesData = [
+        { name: "3A", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/26" },
+        { name: "4A", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/21" },
+        { name: "4B", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/11" },
+        { name: "4C", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/12" },
+        { name: "3B", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/36" },
+        { name: "3C", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/30" },
+        { name: "3D", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/31" },
+        { name: "5D", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/14" },
+        { name: "5C", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/10" },
+        { name: "TORNA1", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/17" },
+        { name: "TORNA2", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/18" },
+        { name: "TORNA3", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/43" },
+        { name: "TORNA4", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/2" },
+        { name: "3E", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/35" },
+        { name: "K1", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/33" },
+        { name: "5I", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/42" },
+        { name: "5H", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/41" },
+        { name: "5G", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/40" },
+        { name: "5F", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/39" },
+        { name: "5E", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/29" },
+        { name: "TESVİYE", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/38" }
+    ];
+
+    // Mobil kontrolü
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    // Link açma fonksiyonu (tema.txt'deki sistemin aynısı)
+    function openLink(url) {
+        if (isMobile()) {
+            // Mobilde yeni sekmede aç
+            window.open(url, '_blank');
+        } else {
+            // Masaüstünde popup pencere
+            const width = 1000;
+            const height = 800;
+            const left = (screen.width - width) / 2;
+            const top = (screen.height - height) / 2;
+            window.open(url, 'tezgahDetay', `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`);
+        }
+    }
+
+    // Kartları render et
+    function renderDashboard() {
+        const dashboard = document.getElementById('dashboard');
+        if (!dashboard) return;
+
+        let gridHtml = '<div class="bench-grid">';
+        
+        benchesData.forEach(bench => {
+            gridHtml += `
+                <div class="bench-card" data-name="${bench.name}" data-url="${bench.url}">
+                    <div class="bench-icon"></div>
+                    <div class="bench-name">${bench.name}</div>
+                    <div class="bench-cross">🚫</div>
+                </div>
+            `;
+        });
+        
+        gridHtml += '</div>';
+        dashboard.innerHTML = gridHtml;
+        
+        // Kartlara tıklama event'lerini ekle
+        attachCardEvents();
+    }
+
+    // Tıklama event'lerini bağla
+    function attachCardEvents() {
+        const cards = document.querySelectorAll('.bench-card');
+        cards.forEach(card => {
+            card.onclick = (e) => {
+                e.stopPropagation();
+                const url = card.getAttribute('data-url');
+                if (url) {
+                    openLink(url);
+                }
+            };
+        });
+    }
+
+    // Sayfa yüklendiğinde çalıştır
+    renderDashboard();
+</script>
+
+</body>
+</html>
