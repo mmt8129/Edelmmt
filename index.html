@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>EDEL | Üretim Araçları</title>
+    <meta name="theme-color" content="#1976D2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Inter', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Banner - Tezgah panosu teması */
+        .sticky-banner {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #1976D2;
+            border-bottom: 3px solid #ffffff;
+            padding: 1rem 1.5rem;
+        }
+
+        .banner-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title-area {
+            text-align: center;
+        }
+
+        .title-area h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+
+        .title-area p {
+            font-size: 0.85rem;
+            color: #ffffff;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        /* Ana menü butonları */
+        .dashboard {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .app-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .app-btn {
+            background: #1976D2;
+            border-radius: 1rem;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: #ffffff;
+            width: 100%;
+            text-align: left;
+        }
+
+        .app-btn:active {
+            transform: scale(0.98);
+        }
+
+        .app-icon {
+            font-size: 2rem;
+        }
+
+        .app-text {
+            flex: 1;
+        }
+
+        .app-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .app-desc {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .external-icon {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        /* Mobil için uyarlama */
+        @media (max-width: 600px) {
+            .sticky-banner {
+                padding: 0.8rem 1rem;
+            }
+            .title-area h1 {
+                font-size: 1.5rem;
+            }
+            .title-area p {
+                font-size: 0.7rem;
+            }
+            .dashboard {
+                margin: 1.5rem auto;
+                padding: 0 1rem;
+            }
+            .app-btn {
+                padding: 1rem 1.2rem;
+            }
+            .app-name {
+                font-size: 1rem;
+            }
+            .app-icon {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sticky-banner">
+        <div class="banner-content">
+            <div class="title-area">
+                <h1>EDEL</h1>
+                <p>ÜRETİM ARAÇLARI</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="app-buttons">
+            <!-- Tezgah Panosu -->
+            <button class="app-btn" onclick="goTo('tezgah.html')">
+                <div class="app-icon">⚙️</div>
+                <div class="app-text">
+                    <div class="app-name">TEZGAH PANOSU</div>
+                    <div class="app-desc">Üretim kayıt girişi ve tezgah seçimi</div>
+                </div>
+            </button>
+
+            <!-- Aktif Partiler (dış link - yeni sekmede) -->
+            <button class="app-btn" onclick="openExternal('https://uys.edelkrone.com/Manufacturing/ProductionBatches/List')">
+                <div class="app-icon">📋</div>
+                <div class="app-text">
+                    <div class="app-name">AKTİF PARTİLER</div>
+                    <div class="app-desc">Üretim partilerini görüntüle</div>
+                </div>
+                <div class="external-icon">🔗</div>
+            </button>
+
+            <!-- Depo Raf Bulucu -->
+            <button class="app-btn" onclick="goTo('depo.html')">
+                <div class="app-icon">📦</div>
+                <div class="app-text">
+                    <div class="app-name">DEPO RAF BULUCU</div>
+                    <div class="app-desc">Parça arama ve raf lokasyonu</div>
+                </div>
+            </button>
+
+            <!-- Hesap Makinesi -->
+            <button class="app-btn" onclick="goTo('hespmak.html')">
+                <div class="app-icon">🧮</div>
+                <div class="app-text">
+                    <div class="app-name">HESAP MAKİNESİ</div>
+                    <div class="app-desc">Merkez & dairesel mesafe hesaplama</div>
+                </div>
+            </button>
+
+            <!-- Resimli Notlar -->
+            <button class="app-btn" onclick="goTo('notlar.html')">
+                <div class="app-icon">📝</div>
+                <div class="app-text">
+                    <div class="app-name">RESİMLİ NOTLAR</div>
+                    <div class="app-desc">Parça notları ve fotoğraflar</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Aynı pencerede yönlendirme (Android geri tuşu ile ana sayfaya dönülür)
+        function goTo(page) {
+            window.location.href = page;
+        }
+
+        // Dış link - yeni sekmede aç (Aktif Partiler için)
+        function openExternal(url) {
+            window.open(url, '_blank');
+        }
+
+        // Service Worker (PWA için)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW kaydedildi:', reg))
+                .catch(err => console.log('SW hatası:', err));
+        }
+    </script>
+</body>
+</html>
