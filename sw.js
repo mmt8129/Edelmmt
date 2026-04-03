@@ -1,17 +1,19 @@
-const CACHE_NAME = "edel-v1";
+const CACHE_NAME = "edel-pwa-v1";
 const urlsToCache = [
   "/Edelmmt/",
   "/Edelmmt/index.html",
   "/Edelmmt/tezgah.html",
   "/Edelmmt/depo.html",
-  "/Edelmmt/hespmak.html",
+  "/Edelmmt/hesap.html",
   "/Edelmmt/notlar.html",
   "/Edelmmt/manifest.json"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(urlsToCache);
+    })
   );
   self.skipWaiting();
 });
