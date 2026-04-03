@@ -11,14 +11,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="EDEL">
     <meta name="mobile-web-app-capable" content="yes">
-   <link rel="manifest" href="/Edelmmt/manifest.json">
-<link rel="icon" type="image/png" sizes="196x196" href="/Edelmmt/icon-196.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/Edelmmt/icon-512.png">
-<meta name="theme-color" content="#1976D2">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="EDEL">
-<link rel="apple-touch-icon" href="/Edelmmt/icon-196.png">
+    <link rel="manifest" href="/Edelmmt/manifest.json">
+    <link rel="icon" type="image/png" sizes="196x196" href="/Edelmmt/icon-196.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/Edelmmt/icon-512.png">
+    <link rel="apple-touch-icon" href="/Edelmmt/icon-196.png">
     
     <style>
         * {
@@ -209,6 +205,15 @@
                 <div class="external-icon">🔗</div>
             </button>
 
+            <!-- Tezgah Olayları (yeni buton) -->
+            <button class="app-btn" onclick="goTo('tezgah_olaylar.html')">
+                <div class="app-icon">⏱️</div>
+                <div class="app-text">
+                    <div class="app-name">TEZGAH OLAYLARI</div>
+                    <div class="app-desc">Tezgah kapatma işlemleri</div>
+                </div>
+            </button>
+
             <!-- Depo Raf Bulucu -->
             <button class="app-btn" onclick="goTo('depo.html')">
                 <div class="app-icon">📦</div>
@@ -310,8 +315,6 @@
             e.preventDefault();
             deferredPrompt = e;
             console.log('📱 PWA kurulumu mümkün');
-            
-            // İstersen burada bir buton gösterip kurulumu tetikleyebilirsin
         });
     </script>
 </body>
