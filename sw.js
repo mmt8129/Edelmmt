@@ -1,12 +1,12 @@
 const CACHE_NAME = "edel-v1";
 const urlsToCache = [
-  "/edel/",
-  "/edel/index.html",
-  "/edel/tezgah.html",
-  "/edel/depo.html",
-  "/edel/hespmak.html",
-  "/edel/notlar.html",
-  "/edel/manifest.json"
+  "/Edelmmt/",
+  "/Edelmmt/index.html",
+  "/Edelmmt/tezgah.html",
+  "/Edelmmt/depo.html",
+  "/Edelmmt/hespmak.html",
+  "/Edelmmt/notlar.html",
+  "/Edelmmt/manifest.json"
 ];
 
 self.addEventListener("install", (event) => {
