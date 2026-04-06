@@ -21,13 +21,20 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
         }
+        
+        /* SABIT ÜST ALAN - tamamen sabit, kaymaz */
+        .fixed-top {
+            flex-shrink: 0;
+            position: relative;
+            z-index: 20;
+        }
+        
         .header { 
-            position: sticky; 
-            top: 0; 
-            z-index: 10; 
             background: #1e3a8a; 
-            padding: 1.2rem 16px; 
+            padding: 1rem 16px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
         }
@@ -38,40 +45,43 @@
             font-weight: 700; 
             letter-spacing: 1px; 
         }
+        
         .stats { 
             background: rgba(255, 255, 245, 0.92);
             backdrop-filter: blur(2px);
-            padding: 12px 16px; 
+            padding: 10px 16px; 
             display: flex; 
             justify-content: space-between; 
             flex-wrap: wrap; 
-            gap: 10px; 
+            gap: 8px; 
             font-size: 13px; 
             font-weight: 500; 
             border-bottom: 1px solid rgba(224, 213, 165, 0.5);
-            margin: 0 12px 12px 12px;
+            margin: 8px 12px 0 12px;
             border-radius: 28px;
         }
         .stat-card { 
             background: white; 
-            padding: 6px 12px; 
+            padding: 5px 12px; 
             border-radius: 20px; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            font-size: 12px;
         }
         .stat-total { color: #1e40af; background: #eef2ff; }
         .stat-instock { color: #15803d; background: #e0f2e7; }
         .stat-outstock { color: #b91c1c; background: #fee2e2; }
+        
         .search-area { 
             background: rgba(255, 255, 245, 0.92);
             backdrop-filter: blur(2px);
-            padding: 12px 16px; 
-            margin: 0 12px 12px 12px;
+            padding: 10px 16px; 
+            margin: 8px 12px;
             border-radius: 28px;
         }
         .search-label { display: block; font-size: 13px; font-weight: 500; color: #1e3a8a; margin-bottom: 6px; margin-left: 4px; }
         .search-wrapper { position: relative; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .search-input { 
-            flex: 1; padding: 14px 16px; font-size: 16px; 
+            flex: 1; padding: 12px 16px; font-size: 16px; 
             border: 1.5px solid #ddd2b6; border-radius: 28px; 
             background: white; outline: none; 
         }
@@ -80,16 +90,23 @@
             background: #1e3a8a; color: white; padding: 8px 16px; 
             border-radius: 28px; font-size: 14px; font-weight: 500; white-space: nowrap; 
         }
-        .results-container { 
-            flex: 1; 
-            padding: 8px 16px 16px 16px; 
-            margin: 8px 12px;
+        
+        /* SADECE LİSTE ALANI KAYABİLİR */
+        .results-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 12px 12px 12px;
         }
+        .results-container {
+            padding: 4px 0 16px 0;
+        }
+        
         .part-card { 
             background: rgba(255, 255, 245, 0.94);
             backdrop-filter: blur(2px);
             border-radius: 28px; 
-            margin-bottom: 16px; 
+            margin-bottom: 12px; 
             padding: 12px; 
             display: flex; 
             align-items: center; 
@@ -97,20 +114,21 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
             border: 1px solid rgba(224, 213, 165, 0.5);
         }
-        .part-image { width: 60px; height: 60px; background: #f0f2f5; border-radius: 12px; object-fit: cover; flex-shrink: 0; cursor: pointer; }
+        .part-image { width: 55px; height: 55px; background: #f0f2f5; border-radius: 12px; object-fit: cover; flex-shrink: 0; cursor: pointer; }
         .part-info { flex: 1; }
-        .part-name { font-weight: 600; font-size: 17px; color: #2c3e4e; margin-bottom: 6px; }
+        .part-name { font-weight: 600; font-size: 16px; color: #2c3e4e; margin-bottom: 6px; }
         .part-rack { 
-            font-size: 14px; font-weight: 500; display: inline-block; padding: 4px 10px; 
+            font-size: 13px; font-weight: 500; display: inline-block; padding: 4px 10px; 
             border-radius: 20px; background: #eef2ff; color: #1e40af; 
         }
         .part-rack.out-of-stock { background: #fee2e2; color: #b91c1c; }
         .info-message { text-align: center; padding: 40px 20px; color: #6c757d; font-size: 15px; }
         .load-more-btn { 
-            display: block; width: 100%; padding: 12px; margin: 16px 0 40px 0; 
+            display: block; width: 100%; padding: 12px; margin: 8px 0 20px 0; 
             background: rgba(245, 240, 225, 0.9); border: 1px solid #ddd2b6; border-radius: 40px; 
-            font-size: 15px; font-weight: 500; color: #1e293b; cursor: pointer; text-align: center; 
+            font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer; text-align: center; 
         }
+        
         .modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; 
@@ -118,29 +136,41 @@
         }
         .modal img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 12px; }
         .modal.show { display: flex; }
+        
         @media (max-width: 480px) { 
-            .header h1 { font-size: 24px; } 
-            .part-image { width: 55px; height: 55px; } 
-            .stats { font-size: 11px; } 
-            .result-count-badge { font-size: 12px; padding: 6px 12px; } 
+            .header h1 { font-size: 22px; } 
+            .part-image { width: 50px; height: 50px; } 
+            .stats { font-size: 10px; }
+            .stat-card { font-size: 10px; padding: 4px 10px; }
+            .result-count-badge { font-size: 11px; padding: 5px 10px; }
+            .search-input { padding: 10px 14px; font-size: 14px; }
+            .part-name { font-size: 14px; }
         }
     </style>
 </head>
 <body>
-    <div class="header"><h1>DEPO</h1></div>
-    <div class="stats" id="statsArea">
-        <span class="stat-card stat-total" id="totalCount">📦 Toplam: -</span>
-        <span class="stat-card stat-instock" id="instockCount">✅ Depoda: -</span>
-        <span class="stat-card stat-outstock" id="outstockCount">⚠️ Tasfiye: -</span>
-    </div>
-    <div class="search-area">
-        <label class="search-label">🔍 Parça Ara</label>
-        <div class="search-wrapper">
-            <input type="text" id="searchInput" class="search-input" placeholder="Örnek: MX7, A1, HM5 ..." autocomplete="off">
-            <span id="resultCountBadge" class="result-count-badge">0 sonuç</span>
+    <!-- SABIT ÜST ALAN (TAMAMEN KAYMAZ) -->
+    <div class="fixed-top">
+        <div class="header"><h1>DEPO</h1></div>
+        <div class="stats" id="statsArea">
+            <span class="stat-card stat-total" id="totalCount">📦 Toplam: -</span>
+            <span class="stat-card stat-instock" id="instockCount">✅ Depoda: -</span>
+            <span class="stat-card stat-outstock" id="outstockCount">⚠️ Tasfiye: -</span>
+        </div>
+        <div class="search-area">
+            <label class="search-label">🔍 Parça Ara</label>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Örnek: MX7, A1, HM5 ..." autocomplete="off">
+                <span id="resultCountBadge" class="result-count-badge">0 sonuç</span>
+            </div>
         </div>
     </div>
-    <div id="resultsContainer" class="results-container"><div class="info-message">📦 Veri yükleniyor...</div></div>
+    
+    <!-- SADECE LİSTE ALANI KAYAR -->
+    <div class="results-wrapper">
+        <div id="resultsContainer" class="results-container"><div class="info-message">📦 Veri yükleniyor...</div></div>
+    </div>
+    
     <div id="imageModal" class="modal"><img id="modalImage" src="" alt="Büyük resim"></div>
 
     <script>
