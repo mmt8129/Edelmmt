@@ -205,11 +205,11 @@
                 <div class="external-icon">🔗</div>
             </button>
 
-            <!-- Tezgah Olayları (yeni buton) -->
+            <!-- Tezgah Olayları (yeni buton) - İSİM DEĞİŞTİRİLDİ -->
             <button class="app-btn" onclick="goTo('tezgah_olaylar.html')">
                 <div class="app-icon">⏱️</div>
                 <div class="app-text">
-                    <div class="app-name">TEZGAH DURUMU</div>
+                    <div class="app-name">TEZGAH KAPATMA</div>
                     <div class="app-desc">Tezgah Kapatma İşlemleri</div>
                 </div>
             </button>
@@ -232,6 +232,16 @@
                 </div>
             </button>
 
+            <!-- YENİ PARTİ BAŞLAT butonu (Hesap Makinesi'nden sonra eklendi) -->
+            <button class="app-btn" onclick="openExternal('https://uys.edelkrone.com/Manufacturing/ProductionBatches/ProductionList')">
+                <div class="app-icon">🆕</div>
+                <div class="app-text">
+                    <div class="app-name">YENİ PARTİ BAŞLAT</div>
+                    <div class="app-desc">Yeni Üretim Partisi Oluştur</div>
+                </div>
+                <div class="external-icon">🔗</div>
+            </button>
+
             <!-- Resimli Notlar -->
             <button class="app-btn" onclick="goTo('notlar.html')">
                 <div class="app-icon">📝</div>
@@ -252,7 +262,7 @@
             window.location.href = page;
         }
 
-        // Dış link - yeni sekmede aç (Aktif Partiler için)
+        // Dış link - yeni sekmede aç (Aktif Partiler ve Yeni Parti Başlat için)
         function openExternal(url) {
             window.open(url, '_blank');
         }
