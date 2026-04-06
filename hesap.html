@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#4a90e2">
+<meta name="theme-color" content="#1e3a8a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
@@ -11,13 +11,13 @@
 <title>Hesap Makinesi – Merkez & Dairesel</title>
 <style>
 :root {
-    --bg: #f5f7fa;
-    --card-bg: #ffffff;
-    --primary: #4a90e2;
-    --secondary: #e9ecef;
-    --text-main: #1d1d1f;
-    --text-sub: #86868b;
-    --btn-shadow: #d1d9e6;
+    --bg: #faf3e0;
+    --card-bg: rgba(255, 255, 245, 0.94);
+    --primary: #1e3a8a;
+    --secondary: #ddd2b6;
+    --text-main: #2c3e4e;
+    --text-sub: #6c757d;
+    --btn-shadow: #c9c0a8;
     --transition: .2s ease;
 }
 
@@ -30,8 +30,15 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
+    background-color: #faf3e0;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 29px,
+        #e0d5bd 30px,
+        #e0d5bd 31px
+    );
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,16 +52,20 @@ body {
     width: 100%;
     max-width: 360px;
     height: 90vh;
-    background: var(--card-bg);
+    background: transparent;
 }
 
 .view {
     position: absolute;
     inset: 0;
-    background: var(--card-bg);
+    background: rgba(255, 255, 245, 0.92);
+    backdrop-filter: blur(2px);
+    border-radius: 28px;
+    border: 1px solid rgba(224, 213, 165, 0.5);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .view.off-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
@@ -67,7 +78,7 @@ body {
     flex-direction: column;
     justify-content: center;
     padding: 15px;
-    background: #fff;
+    background: rgba(255, 255, 245, 0.96);
     border-bottom: 1px solid var(--secondary);
 }
 
@@ -97,7 +108,7 @@ body {
 
 .button {
     height: 65px;
-    background: #fff;
+    background: white;
     border: 1.5px solid var(--secondary);
     border-radius: 16px;
     display: flex;
@@ -106,7 +117,7 @@ body {
     font-size: 24px;
     font-weight: 600;
     color: var(--text-main);
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
     transition: all 0.02s;
     cursor: pointer;
 }
@@ -118,9 +129,9 @@ body {
 }
 
 .operator { border-color: var(--primary); color: var(--primary); }
-.function { color: #eb4d4b; }
-.equals { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 0 #357abd; }
-.equals:active { background: #357abd; box-shadow: 0 1px 0 #357abd; }
+.function { color: #dc3545; }
+.equals { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 0 #0f2a5e; }
+.equals:active { background: #0f2a5e; box-shadow: 0 1px 0 #0f2a5e; }
 
 .mode-btn {
     grid-column: span 2;
@@ -129,7 +140,7 @@ body {
     border: none;
     font-size: 16px;
     height: 50px;
-    box-shadow: 0 4px 0 #357abd;
+    box-shadow: 0 4px 0 #0f2a5e;
 }
 
 .mode-header {
@@ -138,6 +149,7 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--secondary);
+    background: rgba(255, 255, 245, 0.96);
 }
 
 .mode-title { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
@@ -177,7 +189,7 @@ form.inner-form {
     padding: 15px;
     border-radius: 16px;
     text-align: center;
-    box-shadow: 0 6px 15px rgba(74, 144, 226, 0.3);
+    box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3);
 }
 
 .nav-btn {
@@ -188,10 +200,11 @@ form.inner-form {
     border-radius: 10px;
     font-weight: 700;
     font-size: 20px;
-    box-shadow: 0 3px 0 #357abd;
+    box-shadow: 0 3px 0 #0f2a5e;
+    cursor: pointer;
 }
 
-/* ===== RADIO STYLES (KOMPAKT) ===== */
+/* RADIO STYLES */
 .radio-group {
     display: flex;
     flex-wrap: wrap;
@@ -244,7 +257,6 @@ form.inner-form {
     background: #fff;
 }
 
-/* Özel input - Özel yazısının hemen yanında */
 .radio-custom-input {
     width: 55px;
     padding: 6px 4px;
@@ -258,12 +270,6 @@ form.inner-form {
     -moz-appearance: textfield;
     margin-left: 2px;
     vertical-align: middle;
-}
-
-.radio-custom-input::-webkit-outer-spin-button,
-.radio-custom-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
 }
 
 .radio-custom-input:disabled {
@@ -314,21 +320,21 @@ form.inner-form {
       <div class="button function" data-action="backspace" style="font-size:18px">DEL</div>
 
       <div class="button mode-btn" id="open-merkez">MERKEZ</div>
-      <div class="button mode-btn" id="open-dairesel" style="background:#2ecc71; box-shadow: 0 4px 0 #27ae60;">DAİRESEL</div>
+      <div class="button mode-btn" id="open-dairesel" style="background:#15803d; box-shadow: 0 4px 0 #0f5a2a;">DAİRESEL</div>
     </div>
   </div>
 
-  <!-- ===== MERKEZ VIEW ===== -->
+  <!-- MERKEZ VIEW -->
   <div id="merkez-view" class="view off-right">
     <div class="mode-header">
         <button class="nav-btn" id="close-merkez"><span style="font-size: 20px;">👈</span></button>
         <div class="mode-title">Merkez Mesafe</div>
-        <button class="nav-btn" id="merkez-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
+        <button class="nav-btn" id="merkez-temizle" style="background:#dc3545; box-shadow: 0 3px 0 #a71d2a;">SİL</button>
     </div>
     <form class="inner-form" onsubmit="return false">
 
       <label>Tam Çap</label>
-      <div class="radio-group" style="--accent:#4a90e2;">
+      <div class="radio-group" style="--accent: #1e3a8a;">
         <label class="radio-option">
           <input type="radio" name="tam-cap" value="2.5" checked>
           <span class="radio-dot"></span> M3
@@ -374,17 +380,17 @@ form.inner-form {
     </form>
   </div>
 
-  <!-- ===== DAİRESEL VIEW ===== -->
+  <!-- DAİRESEL VIEW -->
   <div id="dairesel-view" class="view off-right">
     <div class="mode-header">
         <button class="nav-btn" id="close-dairesel"><span style="font-size: 20px;">👈</span></button>
         <div class="mode-title">Dairesel Mesafe</div>
-        <button class="nav-btn" id="dairesel-temizle" style="background:#eb4d4b; box-shadow: 0 3px 0 #c0392b;">SİL</button>
+        <button class="nav-btn" id="dairesel-temizle" style="background:#dc3545; box-shadow: 0 3px 0 #a71d2a;">SİL</button>
     </div>
     <form class="inner-form" onsubmit="return false">
 
       <label>Delik Sayısı</label>
-      <div class="radio-group" style="--accent:#2ecc71;">
+      <div class="radio-group" style="--accent:#15803d;">
         <label class="radio-option">
           <input type="radio" name="hole-count" value="2" checked>
           <span class="radio-dot"></span> 2
@@ -404,7 +410,7 @@ form.inner-form {
       <input type="number" id="pcd-radius" placeholder="0" step="any" inputmode="decimal">
 
       <label>Delik Çapı</label>
-      <div class="radio-group" style="--accent:#4a90e2;">
+      <div class="radio-group" style="--accent:#1e3a8a;">
         <label class="radio-option">
           <input type="radio" name="hole-diam" value="2.5" checked>
           <span class="radio-dot"></span> M3
@@ -440,7 +446,7 @@ form.inner-form {
         <div style="font-size:11px">MERKEZDEN MERKEZE</div>
         <span id="center-to-center" style="font-size:22px; font-weight:800">-</span>
       </div>
-      <div class="result-card" style="background:#2ecc71; box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);">
+      <div class="result-card" style="background:#15803d; box-shadow: 0 6px 15px rgba(21, 128, 61, 0.3);">
         <div style="font-size:11px">DIŞTAN DIŞA</div>
         <span id="outer-distance" style="font-size:22px; font-weight:800">-</span>
       </div>
@@ -528,7 +534,7 @@ document.getElementById('calc-view').addEventListener('click',e=>{
   }
 });
 
-/* ===== MERKEZ HESAP ===== */
+/* MERKEZ HESAP */
 function merkezHesap(){
   let tamCap;
   const tamCapChecked=document.querySelector('input[name="tam-cap"]:checked');
@@ -567,7 +573,7 @@ document.getElementById('merkez-temizle').onclick=()=>{
   document.getElementById('merkez-sonuc').textContent='-';
 };
 
-/* ===== DAİRESEL HESAP ===== */
+/* DAİRESEL HESAP */
 function daireselHesap(){
   const radius=parseFloat(document.getElementById('pcd-radius').value);
 
