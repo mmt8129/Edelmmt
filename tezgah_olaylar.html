@@ -3,18 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>TEZGAH OLAYLARI | edelkrone</title>
+    <title>TEZGAH KAPATMA | edelkrone</title>
     
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Inter', sans-serif;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
         }
 
         body {
-            background: #ffffff;
+            background-color: #faf3e0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 29px,
+                #e0d5bd 30px,
+                #e0d5bd 31px
+            );
             min-height: 100vh;
             padding: 0;
         }
@@ -23,9 +30,10 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: #1976D2;
-            border-bottom: 3px solid #ffffff;
+            background: #1e3a8a;
             padding: 1rem 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
         .banner-content {
@@ -69,18 +77,18 @@
             margin-bottom: 2rem;
         }
 
-        /* Normal kart - Mavi zemin */
         .bench-card {
-            background: #1976D2;
+            background: rgba(255, 255, 245, 0.94);
+            backdrop-filter: blur(2px);
             border-radius: 1.2rem;
             padding: 1.2rem 0.8rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            border: 2px solid #1976D2;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 2px solid #1e3a8a;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
             user-select: none;
-            color: #ffffff;
+            color: #2c3e4e;
         }
 
         .bench-card:active {
@@ -97,7 +105,7 @@
             font-size: 1.3rem;
             font-weight: 700;
             letter-spacing: 1px;
-            color: #ffffff;
+            color: #1e3a8a;
             margin-bottom: 0.5rem;
         }
 
@@ -142,9 +150,6 @@
             .title-area h1 {
                 font-size: 1.2rem;
             }
-            .title-area p {
-                font-size: 0.7rem;
-            }
             .sticky-banner {
                 padding: 0.8rem 1rem;
             }
@@ -183,8 +188,6 @@
 <div class="dashboard" id="dashboard"></div>
 
 <script>
-    // Linkler.txt'deki veriler - etiket ve URL eşlemesi
-    // Sıralama: 3A, 4A, 4B, 4C, 3B, 3C, 3D, 5D, 5C, TORNA1, TORNA2, TORNA3, TORNA4, 3E, K1, 5I, 5H, 5G, 5F, 5E, TESVİYE
     const benchesData = [
         { name: "3A", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/26" },
         { name: "4A", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/21" },
@@ -209,18 +212,14 @@
         { name: "TESVİYE", url: "https://uys.edelkrone.com/Manufacturing/Workbenches/Details/38" }
     ];
 
-    // Mobil kontrolü
     function isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
-    // Link açma fonksiyonu (tema.txt'deki sistemin aynısı)
     function openLink(url) {
         if (isMobile()) {
-            // Mobilde yeni sekmede aç
             window.open(url, '_blank');
         } else {
-            // Masaüstünde popup pencere
             const width = 1000;
             const height = 800;
             const left = (screen.width - width) / 2;
@@ -229,7 +228,6 @@
         }
     }
 
-    // Kartları render et
     function renderDashboard() {
         const dashboard = document.getElementById('dashboard');
         if (!dashboard) return;
@@ -249,11 +247,9 @@
         gridHtml += '</div>';
         dashboard.innerHTML = gridHtml;
         
-        // Kartlara tıklama event'lerini ekle
         attachCardEvents();
     }
 
-    // Tıklama event'lerini bağla
     function attachCardEvents() {
         const cards = document.querySelectorAll('.bench-card');
         cards.forEach(card => {
@@ -267,7 +263,6 @@
         });
     }
 
-    // Sayfa yüklendiğinde çalıştır
     renderDashboard();
 </script>
 
