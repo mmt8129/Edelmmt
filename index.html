@@ -25,19 +25,30 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Inter', sans-serif;
-            background: #ffffff;
+            /* maas.html'deki defter teması: hafif sarı zemin + yatay çizgiler */
+            background-color: #faf3e0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 29px,
+                #e0d5bd 30px,
+                #e0d5bd 31px
+            );
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
             min-height: 100vh;
         }
 
-        /* Banner - Tezgah panosu teması */
+        /* Banner - maas temasına uygun lacivert arka plan, beyaz yazı, yumuşak gölge */
         .sticky-banner {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: #1976D2;
-            border-bottom: 3px solid #ffffff;
-            padding: 1rem 1.5rem;
+            background-color: #1e3a8a;      /* maas.html banner rengi */
+            color: white;
+            border-bottom: none;            /* önceki border kaldırıldı, maas temasına uygun */
+            padding: 1.2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .banner-content {
@@ -53,10 +64,11 @@
         }
 
         .title-area h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #ffffff;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            margin: 0;
         }
 
         .title-area p {
@@ -66,7 +78,7 @@
             opacity: 0.9;
         }
 
-        /* Ana menü butonları */
+        /* Ana menü butonları - defter temasına uygun yarı saydam kartlar */
         .dashboard {
             max-width: 500px;
             margin: 2rem auto;
@@ -80,17 +92,18 @@
         }
 
         .app-btn {
-            background: #1976D2;
-            border-radius: 1rem;
+            background: rgba(255, 255, 245, 0.92);   /* maas kartlarının arka planı */
+            backdrop-filter: blur(2px);
+            border-radius: 28px;                    /* maas kartları gibi yuvarlak */
             padding: 1.2rem 1.5rem;
             display: flex;
             align-items: center;
             gap: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            color: #ffffff;
+            border: 1px solid rgba(224, 213, 165, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0,0,0,0.05);
+            color: #1f2f3a;                         /* maas yazı rengi tonu */
             width: 100%;
             text-align: left;
         }
@@ -111,20 +124,23 @@
             font-size: 1.2rem;
             font-weight: 700;
             letter-spacing: 0.5px;
+            color: #2c3e4e;
         }
 
         .app-desc {
             font-size: 0.75rem;
-            opacity: 0.85;
+            opacity: 0.8;
             margin-top: 4px;
+            color: #4a5a6a;
         }
 
         .external-icon {
             font-size: 1rem;
             opacity: 0.7;
+            color: #5e6f8d;
         }
 
-        /* Offline bildirimi */
+        /* Offline bildirimi - maas temasına uygun kırmızı */
         .offline-toast {
             position: fixed;
             bottom: 20px;
@@ -133,18 +149,19 @@
             background: #dc3545;
             color: white;
             padding: 8px 16px;
-            border-radius: 30px;
+            border-radius: 40px;
             font-size: 12px;
             font-weight: 500;
             z-index: 200;
             display: none;
             white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         /* Mobil için uyarlama */
         @media (max-width: 600px) {
             .sticky-banner {
-                padding: 0.8rem 1rem;
+                padding: 1rem 0;
             }
             .title-area h1 {
                 font-size: 1.5rem;
