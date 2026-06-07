@@ -116,6 +116,24 @@
             margin-top: 0.25rem;
         }
 
+        .group-divider {
+            border: none;
+            border-top: 3px solid #000000;
+            margin: 2rem 0 1.5rem 0;
+            width: 100%;
+        }
+
+        .group-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0.5rem 0 1.5rem 0;
+            text-align: left;
+            border-left: 5px solid #1e3a8a;
+            padding-left: 1rem;
+            letter-spacing: 1px;
+        }
+
         @media (max-width: 900px) {
             .bench-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -126,6 +144,9 @@
             }
             .title-area p {
                 font-size: 0.85rem;
+            }
+            .group-title {
+                font-size: 1.2rem;
             }
         }
         
@@ -157,6 +178,12 @@
                 margin: 1rem auto;
                 padding: 0 1rem;
             }
+            .group-title {
+                font-size: 1rem;
+            }
+            .group-divider {
+                margin: 1.5rem 0 1rem 0;
+            }
         }
         
         @media (max-width: 380px) {
@@ -171,6 +198,9 @@
             }
             .bench-cross {
                 font-size: 1rem;
+            }
+            .group-title {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -228,24 +258,79 @@
         }
     }
 
+    function getGroupedBenches() {
+        const groups = {
+            "3 EKSENLER": [],
+            "4 EKSENLER": [],
+            "5 EKSENLER": [],
+            "TORNALAR": [],
+            "DİĞER": []
+        };
+
+        benchesData.forEach(bench => {
+            const name = bench.name;
+            if (name.startsWith("3")) {
+                groups["3 EKSENLER"].push(bench);
+            } else if (name.startsWith("4")) {
+                groups["4 EKSENLER"].push(bench);
+            } else if (name.startsWith("5")) {
+                groups["5 EKSENLER"].push(bench);
+            } else if (name.startsWith("TORNA")) {
+                groups["TORNALAR"].push(bench);
+            } else {
+                groups["DİĞER"].push(bench);
+            }
+        });
+
+        // Her grubu alfabetik sırala
+        for (const key in groups) {
+            groups[key].sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        // DİĞER grubunda K1 önce, TESVİYE sonra
+        groups["DİĞER"].sort((a, b) => {
+            if (a.name === "K1" && b.name === "TESVİYE") return -1;
+            if (a.name === "TESVİYE" && b.name === "K1") return 1;
+            return a.name.localeCompare(b.name);
+        });
+
+        return groups;
+    }
+
     function renderDashboard() {
         const dashboard = document.getElementById('dashboard');
         if (!dashboard) return;
 
-        let gridHtml = '<div class="bench-grid">';
+        const groups = getGroupedBenches();
+        let html = '';
+
+        const groupNames = ["3 EKSENLER", "4 EKSENLER", "5 EKSENLER", "TORNALAR", "DİĞER"];
         
-        benchesData.forEach(bench => {
-            gridHtml += `
-                <div class="bench-card" data-name="${bench.name}" data-url="${bench.url}">
-                    <div class="bench-icon"></div>
-                    <div class="bench-name">${bench.name}</div>
-                    <div class="bench-cross">☢️</div>
-                </div>
-            `;
+        groupNames.forEach((groupName, index) => {
+            const benches = groups[groupName];
+            if (benches.length === 0) return;
+
+            if (index > 0) {
+                html += '<hr class="group-divider">';
+            }
+
+            html += `<div class="group-title">${groupName}</div>`;
+            html += '<div class="bench-grid">';
+            
+            benches.forEach(bench => {
+                html += `
+                    <div class="bench-card" data-name="${bench.name}" data-url="${bench.url}">
+                        <div class="bench-icon"></div>
+                        <div class="bench-name">${bench.name}</div>
+                        <div class="bench-cross">☢️</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
         });
-        
-        gridHtml += '</div>';
-        dashboard.innerHTML = gridHtml;
+
+        dashboard.innerHTML = html;
         
         attachCardEvents();
     }
