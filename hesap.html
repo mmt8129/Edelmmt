@@ -71,7 +71,6 @@ body {
 .view.off-left { transform: translateX(-100%); pointer-events: none; }
 .view.active { transform: translateX(0); }
 
-    
 .display-container {
     height: 115px;
     display: flex;
@@ -144,7 +143,7 @@ body {
 }
 
 .mode-header {
-    padding: 15px 20px;
+    padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -152,11 +151,11 @@ body {
     background: rgba(255, 255, 245, 0.96);
 }
 
-.mode-title { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+.mode-title { color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 15px; }
 
 form.inner-form {
-    padding: 15px 20px;
-    gap: 15px;
+    padding: 12px 20px;
+    gap: 10px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -166,15 +165,15 @@ form.inner-form {
 
 .inner-form label {
     font-weight: 700;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-main);
     text-transform: uppercase;
-    margin-bottom: -8px;
+    margin-bottom: -6px;
 }
 
-.inner-form > input[type="number"] {
+.inner-form > input[type="text"] {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     border: 2px solid var(--primary);
     border-radius: 12px;
     font-size: 18px;
@@ -182,12 +181,24 @@ form.inner-form {
     text-align: center;
     color: var(--text-main);
     background: #fff;
+    cursor: pointer;
+}
+
+.inner-form > input[type="text"]:focus {
+    outline: none;
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+}
+
+.inner-form > input[type="text"].active-input {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
 }
 
 .result-card {
     background: var(--primary);
     color: #fff;
-    padding: 15px;
+    padding: 12px;
     border-radius: 16px;
     text-align: center;
     box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3);
@@ -215,25 +226,25 @@ form.inner-form {
 .radio-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
     align-items: center;
 }
 
 .radio-option {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     cursor: pointer;
-    padding: 6px 10px;
+    padding: 5px 8px;
     border-radius: 8px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-main);
 }
 
 .radio-dot {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     border: 2.5px solid #ccc;
     display: inline-block;
@@ -254,16 +265,16 @@ form.inner-form {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: #fff;
 }
 
 .radio-custom-input {
-    width: 55px;
-    padding: 6px 4px;
-    font-size: 14px;
+    width: 50px;
+    padding: 5px 3px;
+    font-size: 13px;
     font-weight: 700;
     text-align: center;
     border: 2px solid var(--secondary);
@@ -273,6 +284,7 @@ form.inner-form {
     -moz-appearance: textfield;
     margin-left: 2px;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 .radio-custom-input:disabled {
@@ -285,6 +297,56 @@ form.inner-form {
     border-color: var(--primary);
     color: var(--text-main);
     opacity: 1;
+}
+
+.radio-custom-input:focus,
+.radio-custom-input.active-input {
+    outline: none;
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+}
+
+/* NUMERIC KEYPAD */
+.numeric-keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 10px 20px 15px;
+    background: rgba(255, 255, 245, 0.96);
+    border-top: 1px solid var(--secondary);
+}
+
+.keypad-btn {
+    height: 48px;
+    background: white;
+    border: 1.5px solid var(--secondary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-main);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
+    cursor: pointer;
+    will-change: transform;
+}
+
+.keypad-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.keypad-btn.keypad-del {
+    color: #dc3545;
+    grid-column: span 2;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.keypad-btn.keypad-dot {
+    font-weight: 700;
 }
 </style>
 </head>
@@ -369,18 +431,32 @@ form.inner-form {
         <label class="radio-option">
           <input type="radio" name="tam-cap" value="custom">
           <span class="radio-dot"></span> Özel
-          <input type="number" id="tam-cap-custom" class="radio-custom-input" placeholder="0" step="any" inputmode="decimal" disabled>
+          <input type="text" id="tam-cap-custom" class="radio-custom-input" placeholder="0" inputmode="none" readonly disabled>
         </label>
       </div>
 
       <label>Merkez Ölçüsü (mm)</label>
-      <input type="number" id="merkez-olcusu" placeholder="0" step="any" inputmode="decimal">
+      <input type="text" id="merkez-olcusu" placeholder="0" inputmode="none" readonly>
 
       <div class="result-card">
         <div style="font-size:11px; margin-bottom:4px">HESAPLANAN SONUÇ</div>
         <span id="merkez-sonuc" style="font-size:30px; font-weight:800">-</span>
       </div>
     </form>
+    <div class="numeric-keypad" id="merkez-keypad">
+        <div class="keypad-btn keypad-num" data-num="7">7</div>
+        <div class="keypad-btn keypad-num" data-num="8">8</div>
+        <div class="keypad-btn keypad-num" data-num="9">9</div>
+        <div class="keypad-btn keypad-del" data-action="del">DEL</div>
+        <div class="keypad-btn keypad-num" data-num="4">4</div>
+        <div class="keypad-btn keypad-num" data-num="5">5</div>
+        <div class="keypad-btn keypad-num" data-num="6">6</div>
+        <div class="keypad-btn keypad-dot" data-action="dot">.</div>
+        <div class="keypad-btn keypad-num" data-num="1">1</div>
+        <div class="keypad-btn keypad-num" data-num="2">2</div>
+        <div class="keypad-btn keypad-num" data-num="3">3</div>
+        <div class="keypad-btn keypad-num" data-num="0" style="grid-row: span 1;">0</div>
+    </div>
   </div>
 
   <!-- DAİRESEL VIEW -->
@@ -405,12 +481,12 @@ form.inner-form {
         <label class="radio-option">
           <input type="radio" name="hole-count" value="custom">
           <span class="radio-dot"></span> Özel
-          <input type="number" id="hole-count-custom" class="radio-custom-input" placeholder="0" min="2" inputmode="numeric" disabled>
+          <input type="text" id="hole-count-custom" class="radio-custom-input" placeholder="0" inputmode="none" readonly disabled>
         </label>
       </div>
 
       <label>Merkezden Uzaklık (R) (mm)</label>
-      <input type="number" id="pcd-radius" placeholder="0" step="any" inputmode="decimal">
+      <input type="text" id="pcd-radius" placeholder="0" inputmode="none" readonly>
 
       <label>Delik Çapı</label>
       <div class="radio-group" style="--accent:#1e3a8a;">
@@ -441,7 +517,7 @@ form.inner-form {
         <label class="radio-option">
           <input type="radio" name="hole-diam" value="custom">
           <span class="radio-dot"></span> Özel
-          <input type="number" id="hole-diam-custom" class="radio-custom-input" placeholder="0" step="any" inputmode="decimal" disabled>
+          <input type="text" id="hole-diam-custom" class="radio-custom-input" placeholder="0" inputmode="none" readonly disabled>
         </label>
       </div>
 
@@ -454,6 +530,20 @@ form.inner-form {
         <span id="outer-distance" style="font-size:22px; font-weight:800">-</span>
       </div>
     </form>
+    <div class="numeric-keypad" id="dairesel-keypad">
+        <div class="keypad-btn keypad-num" data-num="7">7</div>
+        <div class="keypad-btn keypad-num" data-num="8">8</div>
+        <div class="keypad-btn keypad-num" data-num="9">9</div>
+        <div class="keypad-btn keypad-del" data-action="del">DEL</div>
+        <div class="keypad-btn keypad-num" data-num="4">4</div>
+        <div class="keypad-btn keypad-num" data-num="5">5</div>
+        <div class="keypad-btn keypad-num" data-num="6">6</div>
+        <div class="keypad-btn keypad-dot" data-action="dot">.</div>
+        <div class="keypad-btn keypad-num" data-num="1">1</div>
+        <div class="keypad-btn keypad-num" data-num="2">2</div>
+        <div class="keypad-btn keypad-num" data-num="3">3</div>
+        <div class="keypad-btn keypad-num" data-num="0">0</div>
+    </div>
   </div>
 </div>
 
@@ -547,17 +637,84 @@ document.getElementById('calc-view').addEventListener('click',e=>{
   }
 });
 
+/* ========== NUMERIC KEYPAD LOGIC ========== */
+let activeInputEl = null;
+
+function setActiveInput(el) {
+    if (activeInputEl) {
+        activeInputEl.classList.remove('active-input');
+    }
+    activeInputEl = el;
+    if (activeInputEl) {
+        activeInputEl.classList.add('active-input');
+    }
+}
+
+function setupKeypad(keypadId, inputSelectors) {
+    const keypad = document.getElementById(keypadId);
+    if (!keypad) return;
+
+    const allInputs = [];
+    inputSelectors.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) allInputs.push(el);
+    });
+
+    allInputs.forEach(input => {
+        input.addEventListener('focus', () => setActiveInput(input));
+        input.addEventListener('click', () => setActiveInput(input));
+    });
+
+    keypad.addEventListener('click', (e) => {
+        const btn = e.target.closest('.keypad-btn');
+        if (!btn) return;
+        if (!activeInputEl) return;
+        if (activeInputEl.disabled) return;
+
+        const num = btn.dataset.num;
+        const action = btn.dataset.action;
+
+        if (num !== undefined) {
+            activeInputEl.value += num;
+            triggerInputChange(activeInputEl);
+        } else if (action === 'del') {
+            activeInputEl.value = activeInputEl.value.slice(0, -1);
+            triggerInputChange(activeInputEl);
+        } else if (action === 'dot') {
+            if (!activeInputEl.value.includes('.')) {
+                if (activeInputEl.value === '') {
+                    activeInputEl.value = '0.';
+                } else {
+                    activeInputEl.value += '.';
+                }
+            }
+            triggerInputChange(activeInputEl);
+        }
+    });
+}
+
+function triggerInputChange(inputEl) {
+    const event = new Event('input', { bubbles: true });
+    inputEl.dispatchEvent(event);
+    if (inputEl.id === 'merkez-olcusu' || inputEl.id === 'tam-cap-custom') {
+        merkezHesap();
+    }
+    if (inputEl.id === 'pcd-radius' || inputEl.id === 'hole-count-custom' || inputEl.id === 'hole-diam-custom') {
+        daireselHesap();
+    }
+}
+
 /* MERKEZ HESAP */
 function merkezHesap(){
   let tamCap;
   const tamCapChecked=document.querySelector('input[name="tam-cap"]:checked');
   if(!tamCapChecked){ tamCap=NaN; }
   else if(tamCapChecked.value==='custom'){
-    tamCap=parseFloat(document.getElementById('tam-cap-custom').value);
+    tamCap=parseFloat(document.getElementById('tam-cap-custom').value.replace(',','.'));
   } else {
     tamCap=parseFloat(tamCapChecked.value);
   }
-  const merk=parseFloat(document.getElementById('merkez-olcusu').value);
+  const merk=parseFloat(document.getElementById('merkez-olcusu').value.replace(',','.'));
   document.getElementById('merkez-sonuc').textContent=(isNaN(tamCap)||isNaN(merk))?'-':(merk-tamCap/2).toFixed(2) + " mm";
 }
 
@@ -566,35 +723,39 @@ document.querySelectorAll('input[name="tam-cap"]').forEach(r=>{
     const customInput=document.getElementById('tam-cap-custom');
     if(this.value==='custom'){
       customInput.disabled=false;
+      customInput.readOnly = false;
       customInput.focus();
     } else {
       customInput.disabled=true;
+      customInput.readOnly = true;
       customInput.value='';
     }
     merkezHesap();
   });
 });
 
-document.getElementById('tam-cap-custom').oninput=merkezHesap;
-document.getElementById('merkez-olcusu').oninput=merkezHesap;
+document.getElementById('tam-cap-custom').addEventListener('input', merkezHesap);
+document.getElementById('merkez-olcusu').addEventListener('input', merkezHesap);
 
 document.getElementById('merkez-temizle').onclick=()=>{
   document.querySelector('input[name="tam-cap"][value="2.5"]').checked=true;
   document.getElementById('tam-cap-custom').value='';
   document.getElementById('tam-cap-custom').disabled=true;
+  document.getElementById('tam-cap-custom').readOnly = true;
   document.getElementById('merkez-olcusu').value='';
   document.getElementById('merkez-sonuc').textContent='-';
+  setActiveInput(document.getElementById('merkez-olcusu'));
 };
 
 /* DAİRESEL HESAP */
 function daireselHesap(){
-  const radius=parseFloat(document.getElementById('pcd-radius').value);
+  const radius=parseFloat(document.getElementById('pcd-radius').value.replace(',','.'));
 
   let count;
   const countChecked=document.querySelector('input[name="hole-count"]:checked');
   if(!countChecked){ count=NaN; }
   else if(countChecked.value==='custom'){
-    count=parseFloat(document.getElementById('hole-count-custom').value);
+    count=parseFloat(document.getElementById('hole-count-custom').value.replace(',','.'));
   } else {
     count=parseFloat(countChecked.value);
   }
@@ -603,7 +764,7 @@ function daireselHesap(){
   const diamChecked=document.querySelector('input[name="hole-diam"]:checked');
   if(!diamChecked){ diam=NaN; }
   else if(diamChecked.value==='custom'){
-    diam=parseFloat(document.getElementById('hole-diam-custom').value);
+    diam=parseFloat(document.getElementById('hole-diam-custom').value.replace(',','.'));
   } else {
     diam=parseFloat(diamChecked.value);
   }
@@ -618,50 +779,72 @@ function daireselHesap(){
   document.getElementById('outer-distance').textContent=(center2+diam).toFixed(2)+' mm';
 }
 
-document.getElementById('pcd-radius').oninput=daireselHesap;
+document.getElementById('pcd-radius').addEventListener('input', daireselHesap);
 
 document.querySelectorAll('input[name="hole-count"]').forEach(r=>{
   r.addEventListener('change',function(){
     const customInput=document.getElementById('hole-count-custom');
     if(this.value==='custom'){
       customInput.disabled=false;
+      customInput.readOnly = false;
       customInput.focus();
     } else {
       customInput.disabled=true;
+      customInput.readOnly = true;
       customInput.value='';
     }
     daireselHesap();
   });
 });
 
-document.getElementById('hole-count-custom').oninput=daireselHesap;
+document.getElementById('hole-count-custom').addEventListener('input', daireselHesap);
 
 document.querySelectorAll('input[name="hole-diam"]').forEach(r=>{
   r.addEventListener('change',function(){
     const customInput=document.getElementById('hole-diam-custom');
     if(this.value==='custom'){
       customInput.disabled=false;
+      customInput.readOnly = false;
       customInput.focus();
     } else {
       customInput.disabled=true;
+      customInput.readOnly = true;
       customInput.value='';
     }
     daireselHesap();
   });
 });
 
-document.getElementById('hole-diam-custom').oninput=daireselHesap;
+document.getElementById('hole-diam-custom').addEventListener('input', daireselHesap);
 
 document.getElementById('dairesel-temizle').onclick=()=>{
   document.getElementById('pcd-radius').value='';
   document.querySelector('input[name="hole-count"][value="2"]').checked=true;
   document.getElementById('hole-count-custom').value='';
   document.getElementById('hole-count-custom').disabled=true;
+  document.getElementById('hole-count-custom').readOnly = true;
   document.querySelector('input[name="hole-diam"][value="2.5"]').checked=true;
   document.getElementById('hole-diam-custom').value='';
   document.getElementById('hole-diam-custom').disabled=true;
+  document.getElementById('hole-diam-custom').readOnly = true;
   daireselHesap();
+  setActiveInput(document.getElementById('pcd-radius'));
 };
+
+// Başlangıçta Merkez ve Dairesel inputlarını aktif et
+document.getElementById('merkez-olcusu').addEventListener('click', function() {
+    setActiveInput(this);
+});
+document.getElementById('pcd-radius').addEventListener('click', function() {
+    setActiveInput(this);
+});
+
+// Keypad'leri başlat
+setupKeypad('merkez-keypad', ['#merkez-olcusu', '#tam-cap-custom']);
+setupKeypad('dairesel-keypad', ['#pcd-radius', '#hole-count-custom', '#hole-diam-custom']);
+
+// Varsayılan aktif input
+setActiveInput(document.getElementById('merkez-olcusu'));
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
