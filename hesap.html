@@ -18,7 +18,6 @@
     --text-main: #2c3e4e;
     --text-sub: #6c757d;
     --btn-shadow: #c9c0a8;
-    --transition: .2s ease;
 }
 
 * {
@@ -59,13 +58,13 @@ body {
     position: absolute;
     inset: 0;
     background: rgba(255, 255, 245, 0.92);
-    backdrop-filter: blur(2px);
     border-radius: 28px;
     border: 1px solid rgba(224, 213, 165, 0.5);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+    transition: transform 0.35s ease-out, opacity 0.35s ease-out;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    will-change: transform, opacity;
 }
 
 .view.off-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
@@ -118,20 +117,20 @@ body {
     font-weight: 600;
     color: var(--text-main);
     box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
-    transition: all 0.02s;
+    transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
     cursor: pointer;
+    will-change: transform;
 }
 
 .button:active {
     transform: translateY(3px);
-    box-shadow: 0 1px 0 var(--secondary);
-    background: #f0f0f0;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .operator { border-color: var(--primary); color: var(--primary); }
 .function { color: #dc3545; }
 .equals { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 0 #0f2a5e; }
-.equals:active { background: #0f2a5e; box-shadow: 0 1px 0 #0f2a5e; }
+.equals:active { box-shadow: 0 1px 0 #0f2a5e; }
 
 .mode-btn {
     grid-column: span 2;
@@ -161,6 +160,7 @@ form.inner-form {
     flex-direction: column;
     overflow-y: auto;
     flex: 1;
+    -webkit-overflow-scrolling: touch;
 }
 
 .inner-form label {
@@ -202,6 +202,12 @@ form.inner-form {
     font-size: 20px;
     box-shadow: 0 3px 0 #0f2a5e;
     cursor: pointer;
+    transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
+}
+
+.nav-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #0f2a5e;
 }
 
 /* RADIO STYLES */
@@ -219,13 +225,10 @@ form.inner-form {
     cursor: pointer;
     padding: 6px 10px;
     border-radius: 8px;
-    transition: background 0.2s;
     font-weight: 700;
     font-size: 14px;
     color: var(--text-main);
 }
-
-.radio-option:hover { background: #f0f0f0; }
 
 .radio-dot {
     width: 20px;
@@ -234,7 +237,6 @@ form.inner-form {
     border: 2.5px solid #ccc;
     display: inline-block;
     flex-shrink: 0;
-    transition: border-color 0.2s, background 0.2s;
     position: relative;
 }
 
@@ -478,8 +480,13 @@ class CalcEngine{
     this.displayEl=displayEl; this.historyEl=historyEl; this.current='0'; this.previous=null; this.operation=null; this.resetScreen=false; this.update();
   }
   update(){
-    let[int,dec]=this.current.split('.'); int=int.replace(/\B(?=(\d{3})+(?!\d))/g,',');
-    this.displayEl.textContent=dec?int+'.'+dec:int;
+    let displayText = this.current;
+    if(displayText !== 'Error'){
+        let[int,dec]=displayText.split('.');
+        int=int.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+        displayText = dec ? int+'.'+dec : int;
+    }
+    this.displayEl.textContent = displayText;
     this.historyEl.textContent = this.operation ? `${this.previous} ${this.getOpSym(this.operation)}` : '';
   }
   getOpSym(op){
@@ -494,11 +501,12 @@ class CalcEngine{
     else this.current=this.current.slice(0,-1);this.update();
   }
   append(n){
-    if(this.resetScreen || this.current==='0'){this.current=n;this.resetScreen=false;}
+    if(this.resetScreen || this.current==='0' || this.current==='Error'){this.current=n;this.resetScreen=false;}
     else this.current+=n;this.update();
   }
   decimal(){
     if(this.resetScreen){this.current='0.';this.resetScreen=false;}
+    else if(this.current==='Error'){this.current='0.';}
     else if(!this.current.includes('.'))this.current+='.';this.update();
   }
   chooseOp(op){
@@ -508,12 +516,16 @@ class CalcEngine{
   calculate(){
     if(!this.operation||this.previous===null)return;
     const prev=parseFloat(this.previous),cur=parseFloat(this.current);
+    if(isNaN(prev)||isNaN(cur)) return;
     let result;
     switch(this.operation){
       case'add':result=prev+cur;break;
       case'subtract':result=prev-cur;break;
       case'multiply':result=prev*cur;break;
       case'divide':result=cur===0?'Error':prev/cur;break;
+    }
+    if(result !== 'Error'){
+        result = parseFloat(result.toPrecision(12));
     }
     this.current=result.toString();this.operation=null;this.resetScreen=true;this.update();
   }
