@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Depo Raf Bulucu</title>
+    <link rel="manifest" href="/edeldepo/manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
+            background-color: #faf3e0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 29px,
+                #e0d5bd 30px,
+                #e0d5bd 31px
+            );
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .fixed-top {
+            flex-shrink: 0;
+            position: relative;
+            z-index: 20;
+        }
+        
+        .header { 
+            background: #1e3a8a; 
+            padding: 1rem 16px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .header h1 { 
+            text-align: center; 
+            color: white; 
+            font-size: 28px; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+        }
+        
+        .stats { 
+            background: rgba(255, 255, 245, 0.92);
+            backdrop-filter: blur(2px);
+            padding: 10px 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+            font-size: 13px; 
+            font-weight: 500; 
+            border-bottom: 1px solid rgba(224, 213, 165, 0.5);
+            margin: 8px 12px 0 12px;
+            border-radius: 28px;
+        }
+        .stat-card { 
+            background: white; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            font-size: 12px;
+        }
+        .stat-total { color: #1e40af; background: #eef2ff; }
+        .stat-instock { color: #15803d; background: #e0f2e7; }
+        .stat-outstock { color: #b91c1c; background: #fee2e2; }
+        
+        .search-area { 
+            background: rgba(255, 255, 245, 0.92);
+            backdrop-filter: blur(2px);
+            padding: 10px 16px; 
+            margin: 8px 12px;
+            border-radius: 28px;
+        }
+        .search-label { display: block; font-size: 13px; font-weight: 500; color: #1e3a8a; margin-bottom: 6px; margin-left: 4px; }
+        .search-wrapper { position: relative; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .search-input { 
+            flex: 1; padding: 12px 16px; font-size: 16px; 
+            border: 1.5px solid #ddd2b6; border-radius: 28px; 
+            background: white; outline: none; 
+        }
+        .search-input:focus { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30,58,138,0.15); }
+        .result-count-badge { 
+            background: #1e3a8a; color: white; padding: 8px 16px; 
+            border-radius: 28px; font-size: 14px; font-weight: 500; white-space: nowrap; 
+        }
+        
+        .results-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 12px 12px 12px;
+        }
+        .results-container {
+            padding: 4px 0 16px 0;
+        }
+        
+        .part-card { 
+            background: rgba(255, 255, 245, 0.94);
+            backdrop-filter: blur(2px);
+            border-radius: 28px; 
+            margin-bottom: 12px; 
+            padding: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid rgba(224, 213, 165, 0.5);
+        }
+        .part-image { width: 55px; height: 55px; background: #f0f2f5; border-radius: 12px; object-fit: cover; flex-shrink: 0; cursor: pointer; }
+        .part-info { flex: 1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .part-name { font-weight: 600; font-size: 16px; color: #2c3e4e; }
+        .part-rack { 
+            font-size: 13px; font-weight: 500; display: inline-block; padding: 4px 10px; 
+            border-radius: 20px; background: #eef2ff; color: #1e40af; 
+        }
+        .part-rack.out-of-stock { background: #fee2e2; color: #b91c1c; }
+        .detail-link {
+            display: inline-block;
+            padding: 6px 14px;
+            background: #1e3a8a;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+        .info-message { text-align: center; padding: 40px 20px; color: #6c757d; font-size: 15px; }
+        .load-more-btn { 
+            display: block; width: 100%; padding: 12px; margin: 8px 0 20px 0; 
+            background: rgba(245, 240, 225, 0.9); border: 1px solid #ddd2b6; border-radius: 40px; 
+            font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer; text-align: center; 
+        }
+        
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; 
+            align-items: center; cursor: pointer; 
+        }
+        .modal img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 12px; }
+        .modal.show { display: flex; }
+        
+        @media (max-width: 480px) { 
+            .header h1 { font-size: 22px; } 
+            .part-image { width: 50px; height: 50px; } 
+            .stats { font-size: 10px; }
+            .stat-card { font-size: 10px; padding: 4px 10px; }
+            .result-count-badge { font-size: 11px; padding: 5px 10px; }
+            .search-input { padding: 10px 14px; font-size: 14px; }
+            .part-name { font-size: 14px; }
+            .part-rack { font-size: 11px; padding: 3px 8px; }
+            .detail-link { font-size: 11px; padding: 4px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-top">
+        <div class="header"><h1>DEPO</h1></div>
+        <div class="stats" id="statsArea">
+            <span class="stat-card stat-total" id="totalCount">Toplam Parça Sayısı: -</span>
+            <span class="stat-card stat-instock" id="instockCount">Depodaki Aktif Parça Sayısı: -</span>
+            <span class="stat-card stat-outstock" id="outstockCount">Tasfiye Parça Sayısı: -</span>
+        </div>
+        <div class="search-area">
+            <label class="search-label">?? Parça Ara</label>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Örnek: MX7, A1, HM5 ..." autocomplete="off">
+                <span id="resultCountBadge" class="result-count-badge">0 sonuç</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="results-wrapper">
+        <div id="resultsContainer" class="results-container"><div class="info-message">?? Veri yükleniyor...</div></div>
+    </div>
+    
+    <div id="imageModal" class="modal"><img id="modalImage" src="" alt="Büyük resim"></div>
+
+    <script>
+        const VERI_URL = 'https://raw.githubusercontent.com/mmt8129/edeldepo/refs/heads/main/veri.html';
+        const searchInput = document.getElementById('searchInput');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const resultCountBadge = document.getElementById('resultCountBadge');
+        const totalCountSpan = document.getElementById('totalCount');
+        const instockCountSpan = document.getElementById('instockCount');
+        const outstockCountSpan = document.getElementById('outstockCount');
+        
+        let allParts = [];
+        let isLoading = true;
+        let currentFiltered = [];
+        let currentDisplayLimit = 10;
+
+        modal.addEventListener('click', () => modal.classList.remove('show'));
+
+        function updateStats() {
+            const total = allParts.length;
+            const instock = allParts.filter(p => p.stokDurumu === 'var').length;
+            const outstock = total - instock;
+            totalCountSpan.innerHTML = `Toplam Parça Sayısı: ${total}`;
+            instockCountSpan.innerHTML = `Depoda Aktif Parça Sayısı: ${instock}`;
+            outstockCountSpan.innerHTML = `Tasfiye Parça Sayısı: ${outstock}`;
+        }
+
+        function displayFilteredResults() {
+            if (currentFiltered.length === 0) {
+                resultsContainer.innerHTML = `<div class="info-message">?? "${searchInput.value}" ile eşleşen parça bulunamadı.</div>`;
+                resultCountBadge.textContent = `0 sonuç`;
+                return;
+            }
+            
+            resultCountBadge.textContent = `${currentFiltered.length} sonuç`;
+            const showCount = Math.min(currentDisplayLimit, currentFiltered.length);
+            const showItems = currentFiltered.slice(0, showCount);
+            
+            let html = '';
+            for (let part of showItems) {
+                const rackClass = part.stokDurumu === 'yok' ? 'out-of-stock' : '';
+                const imgSrc = part.resim || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ccc"%3E%3Cpath d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-2h2v2zm0-4h-2V7h2v6z"/%3E%3C/svg%3E';
+                html += `
+                    <div class="part-card">
+                        <img class="part-image" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(part.ad)}" data-fullimg="${escapeHtml(part.resim)}">
+                        <div class="part-info">
+                            <span class="part-name">${escapeHtml(part.ad)}</span>
+                            <span class="part-rack ${rackClass}">${escapeHtml(part.raf)}</span>
+                        </div>
+                        <a href="https://uys.edelkrone.com/Manufacturing/Parts/Details/${part.id}" target="_blank" class="detail-link">Detay</a>
+                    </div>
+                `;
+            }
+            
+            if (currentDisplayLimit < currentFiltered.length) {
+                html += `<button id="loadMoreBtn" class="load-more-btn">+ Daha fazla göster (${currentFiltered.length - currentDisplayLimit} kaldı)</button>`;
+            }
+            
+            resultsContainer.innerHTML = html;
+            
+            const newBtn = document.getElementById('loadMoreBtn');
+            if (newBtn) {
+                newBtn.addEventListener('click', () => {
+                    currentDisplayLimit += 10;
+                    displayFilteredResults();
+                });
+            }
+            
+            document.querySelectorAll('.part-image').forEach(img => {
+                img.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const fullUrl = img.getAttribute('data-fullimg');
+                    if (fullUrl && !fullUrl.includes('data:image')) {
+                        modalImg.src = fullUrl;
+                        modal.classList.add('show');
+                    } else {
+                        alert('Büyük resim bulunmuyor.');
+                    }
+                });
+            });
+        }
+
+        function performSearch() {
+            if (isLoading) return;
+            const query = searchInput.value.trim().toLowerCase();
+            currentFiltered = query === '' ? allParts : allParts.filter(p => p.ad.toLowerCase().includes(query));
+            currentDisplayLimit = 10;
+            displayFilteredResults();
+        }
+
+        async function loadParts() {
+            try {
+                const response = await fetch(VERI_URL + '?t=' + Date.now());
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const htmlText = await response.text();
+
+                const rowRegex = /<tr>([\s\S]*?)<\/tr>/gi;
+                let match;
+                allParts = [];
+
+                while ((match = rowRegex.exec(htmlText)) !== null) {
+                    const rowContent = match[1];
+                    
+                    let imgSrc = '';
+                    const imgRegex = /<img[^>]+src=["']([^"']+)["']/i;
+                    const imgMatch = imgRegex.exec(rowContent);
+                    if (imgMatch) imgSrc = imgMatch[1];
+                    
+                    let partName = '';
+                    let partLink = '';
+                    const nameRegex = /<a[^>]*href=["']([^"']+)["'][^>]*>([^<]+)<\/a>/i;
+                    const nameMatch = nameRegex.exec(rowContent);
+                    if (nameMatch) {
+                        partName = nameMatch[2].trim();
+                        partLink = nameMatch[1].trim();
+                    }
+                    if (!partName) continue;
+                    
+                    let partId = '';
+                    const idRegex = /\/Details\/(\d+)/;
+                    const idMatch = idRegex.exec(partLink);
+                    if (idMatch) partId = idMatch[1];
+                    
+                    let rackRaw = '';
+                    const rackRegex = /<\/a>\s*&nbsp;\s*([^<]+)/i;
+                    const rackMatch = rackRegex.exec(rowContent);
+                    if (rackMatch) rackRaw = rackMatch[1].trim();
+                    
+                    let statusText = '';
+                    const tdRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
+                    let tdIndex = 0;
+                    let tdMatch;
+                    while ((tdMatch = tdRegex.exec(rowContent)) !== null) {
+                        if (tdIndex === 4) {
+                            statusText = tdMatch[1].replace(/<[^>]*>/g, '').trim();
+                            break;
+                        }
+                        tdIndex++;
+                    }
+                    
+                    const isStatusOut = statusText.includes('Tasfiye') || statusText.includes('Üretimde') || statusText === '';
+                    
+                    let rackNumber = 'TASFİYE';
+                    let isOutOfStock = true;
+                    
+                    if (rackRaw && !isStatusOut) {
+                        rackNumber = rackRaw;
+                        isOutOfStock = false;
+                    } else if (rackRaw && isStatusOut) {
+                        rackNumber = rackRaw;
+                        isOutOfStock = true;
+                    }
+                    
+                    allParts.push({
+                        ad: partName,
+                        resim: imgSrc,
+                        raf: rackNumber,
+                        stokDurumu: isOutOfStock ? 'yok' : 'var',
+                        id: partId
+                    });
+                }
+                
+                console.log(`${allParts.length} parça yüklendi`);
+                isLoading = false;
+                updateStats();
+                performSearch();
+                
+                if (allParts.length === 0) {
+                    resultsContainer.innerHTML = `<div class="info-message">?? Hiç parça bulunamadı.</div>`;
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                resultsContainer.innerHTML = `<div class="info-message">?? veri.html yüklenemedi: ${error.message}</div>`;
+                isLoading = false;
+            }
+        }
+
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+        
+        searchInput.addEventListener('input', performSearch);
+        loadParts();
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/edeldepo/sw.js')
+                .then(reg => console.log('? SW kayıtlı:', reg))
+                .catch(err => console.log('? SW hatası:', err));
+            navigator.serviceWorker.ready.then(() => console.log('?? SW aktif ve hazır'));
+        }
+    </script>
+</body>
+</html>
