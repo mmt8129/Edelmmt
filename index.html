@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>EDEL | Üretim Araçları</title>
+    
+    <!-- PWA Meta Etiketleri -->
+    <meta name="theme-color" content="#1976D2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="EDEL">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/Edelmmt/manifest.json">
+    <link rel="icon" type="image/png" sizes="196x196" href="/Edelmmt/icon-196.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/Edelmmt/icon-512.png">
+    <link rel="apple-touch-icon" href="/Edelmmt/icon-196.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #faf3e0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 29px,
+                #e0d5bd 30px,
+                #e0d5bd 31px
+            );
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Banner */
+        .sticky-banner {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1.2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .banner-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .title-area {
+            text-align: center;
+        }
+
+        .title-area h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .title-area p {
+            font-size: 0.85rem;
+            color: #ffffff;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        /* Hamburger menü ikonu */
+        .hamburger {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            padding: 0.3rem;
+            z-index: 110;
+            user-select: none;
+        }
+
+        /* Hamburger panel */
+        .hamburger-panel {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 260px;
+            height: 100vh;
+            background: rgba(255, 255, 245, 0.97);
+            backdrop-filter: blur(6px);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            transition: left 0.25s ease;
+            padding: 2rem 1.2rem 1.2rem 1.2rem;
+            overflow-y: auto;
+            border-right: 1px solid rgba(224, 213, 165, 0.6);
+        }
+
+        .hamburger-panel.open {
+            left: 0;
+        }
+
+        .hamburger-panel .close-btn {
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #1e3a8a;
+            background: none;
+            border: none;
+            display: block;
+            margin-bottom: 1.2rem;
+            text-align: right;
+            width: 100%;
+        }
+
+        .hamburger-panel .menu-item {
+            display: block;
+            padding: 0.8rem 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(224, 213, 165, 0.4);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .hamburger-panel .menu-item:hover {
+            background: rgba(30, 58, 138, 0.06);
+        }
+
+        /* Alt menü */
+        .submenu {
+            display: none;
+            padding-left: 1.2rem;
+        }
+
+        .submenu.open {
+            display: block;
+        }
+
+        .submenu .menu-item {
+            font-weight: 400;
+            font-size: 1rem;
+            padding: 0.6rem 0.5rem;
+            color: #2c3e4e;
+            border-bottom: 1px solid rgba(224, 213, 165, 0.3);
+        }
+
+        .has-submenu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .has-submenu .arrow {
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+        }
+
+        .has-submenu .arrow.open {
+            transform: rotate(90deg);
+        }
+
+        /* Vaka No bölümü */
+        .vaka-section {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(224, 213, 165, 0.6);
+        }
+
+        .vaka-section .vaka-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 0.6rem;
+        }
+
+        .vaka-section .vaka-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .vaka-section input {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1px solid #c0b5a0;
+            border-radius: 12px;
+            background: white;
+            outline: none;
+            color: #1f2f3a;
+            min-width: 0;
+        }
+
+        .vaka-section input:focus {
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.15);
+        }
+
+        .vaka-section button {
+            padding: 0.6rem 1.2rem;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .vaka-section button:active {
+            background: #152d6b;
+        }
+
+        /* Arka plan karartma */
+        .hamburger-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 998;
+            display: none;
+        }
+
+        .hamburger-overlay.active {
+            display: block;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .app-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .app-btn {
+            background: rgba(255, 255, 245, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 28px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(224, 213, 165, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0,0,0,0.05);
+            color: #1f2f3a;
+            width: 100%;
+            text-align: left;
+        }
+
+        .app-btn:active {
+            transform: scale(0.98);
+        }
+
+        .app-icon {
+            font-size: 2rem;
+        }
+
+        .app-text {
+            flex: 1;
+        }
+
+        .app-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #2c3e4e;
+        }
+
+        .app-desc {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 4px;
+            color: #4a5a6a;
+        }
+
+        .external-icon {
+            font-size: 1rem;
+            opacity: 0.7;
+            color: #5e6f8d;
+        }
+
+        /* Offline bildirimi */
+        .offline-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 200;
+            display: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Mobil uyarlama */
+        @media (max-width: 600px) {
+            .sticky-banner {
+                padding: 1rem 0;
+            }
+            .title-area h1 {
+                font-size: 1.5rem;
+            }
+            .title-area p {
+                font-size: 0.7rem;
+            }
+            .hamburger {
+                left: 0.8rem;
+                font-size: 1.6rem;
+            }
+            .hamburger-panel {
+                width: 220px;
+                left: -240px;
+                padding: 1.5rem 1rem 1rem 1rem;
+            }
+            .dashboard {
+                margin: 1.5rem auto;
+                padding: 0 1rem;
+            }
+            .app-btn {
+                padding: 1rem 1.2rem;
+            }
+            .app-name {
+                font-size: 1rem;
+            }
+            .app-icon {
+                font-size: 1.6rem;
+            }
+            .offline-toast {
+                font-size: 10px;
+                bottom: 15px;
+                padding: 6px 12px;
+            }
+            .vaka-section input {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.7rem;
+            }
+            .vaka-section button {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sticky-banner">
+        <div class="banner-content">
+            <!-- Hamburger ikonu -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menü">&#9776;</button>
+            <div class="title-area">
+                <h1>EDEL</h1>
+                <p>&#220;RET&#304;M ARA&Ccedil;LARI</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hamburger panel -->
+    <div class="hamburger-overlay" id="hamburgerOverlay"></div>
+    <div class="hamburger-panel" id="hamburgerPanel">
+        <button class="close-btn" id="hamburgerCloseBtn">&#10005;</button>
+
+        <!-- Giriş -->
+        <a class="menu-item" onclick="openExternal('https://uys.edelkrone.com/Time/Home/Code?timeEvent=Shift&start=True')">Giriş</a>
+
+        <!-- Bordro -->
+        <a class="menu-item" onclick="openExternal('https://uys.edelkrone.com/HumanResources/Payroll')">Bordro</a>
+
+        <!-- Atamalar (alt menülü) -->
+        <div class="menu-item has-submenu" id="atamalarParent">
+            <span>Atamalar</span>
+            <span class="arrow" id="atamalarArrow">&#9658;</span>
+        </div>
+        <div class="submenu" id="atamalarSubmenu">
+            <a class="menu-item" onclick="openExternal('https://uys.edelkrone.com/Manufacturing/Workbenches/Assignments')">Operat&#246;r</a>
+            <a class="menu-item" onclick="openExternal('https://uys.edelkrone.com/Manufacturing/Workbenches/TunerAssignments')">Ayarc&#305;</a>
+        </div>
+
+        <!-- Vaka No bölümü -->
+        <div class="vaka-section">
+            <div class="vaka-title">VAKA NO</div>
+            <div class="vaka-row">
+                <input id="RecordId" type="number" inputmode="numeric" placeholder="Vaka No girin" />
+                <button onclick="goToVaka()">Git</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="app-buttons">
+            <!-- Tezgah Panosu -->
+            <button class="app-btn" onclick="goTo('tezgah.html')">
+                <div class="app-icon">&#128221;</div>
+                <div class="app-text">
+                    <div class="app-name">KAYIT G&#304;R&#304;&#350;&#304;</div>
+                    <div class="app-desc">&Uuml;retim Kayıt Girişi ve Tezgah Seçimi</div>
+                </div>
+            </button>
+
+            <!-- Aktif Partiler -->
+            <button class="app-btn" onclick="openExternal('https://uys.edelkrone.com/Manufacturing/ProductionBatches/List')">
+                <div class="app-icon">&#128203;</div>
+                <div class="app-text">
+                    <div class="app-name">AKT&#304;F PART&#304;LER</div>
+                    <div class="app-desc">&Uuml;retim Partilerini G&#246;r&#252;nt&#252;le</div>
+                </div>
+                <div class="external-icon">&#128279;</div>
+            </button>
+
+            <!-- Tezgah Kapatma -->
+            <button class="app-btn" onclick="goTo('tezgah_olaylar.html')">
+                <div class="app-icon">&#9203;</div>
+                <div class="app-text">
+                    <div class="app-name">TEZGAH KAPATMA</div>
+                    <div class="app-desc">Tezgah Kapatma &#304;&#351;lemleri</div>
+                </div>
+            </button>
+
+            <!-- Depo Raf Bulucu -->
+            <button class="app-btn" onclick="goTo('depo.html')">
+                <div class="app-icon">&#128230;</div>
+                <div class="app-text">
+                    <div class="app-name">DEPODAK&#304; PAR&Ccedil;ALAR</div>
+                    <div class="app-desc">Par&#231;a Arama</div>
+                </div>
+            </button>
+
+            <!-- Hesap Makinesi -->
+            <button class="app-btn" onclick="goTo('hesap.html')">
+                <div class="app-icon">&#129518;</div>
+                <div class="app-text">
+                    <div class="app-name">HESAP MAK&#304;NES&#304;</div>
+                    <div class="app-desc">Merkez &amp; Dairesel Mesafe Hesaplama</div>
+                </div>
+            </button>
+
+            <!-- YENİ PARTİ BAŞLAT -->
+            <button class="app-btn" onclick="openExternal('https://uys.edelkrone.com/Manufacturing/ProductionBatches/ProductionList')">
+                <div class="app-icon">&#128198;</div>
+                <div class="app-text">
+                    <div class="app-name">YEN&#304; PART&#304; BA&#350;LAT</div>
+                    <div class="app-desc">Yeni &Uuml;retim Partisi Olu&#351;tur</div>
+                </div>
+                <div class="external-icon">&#128279;</div>
+            </button>
+
+            <!-- Resimli Notlar -->
+            <button class="app-btn" onclick="goTo('notlar.html')">
+                <div class="app-icon">&#128221;</div>
+                <div class="app-text">
+                    <div class="app-name">&Uuml;RET&#304;LEN PAR&Ccedil;A NOTLARI</div>
+                    <div class="app-desc">Par&#231;a Notlar&#305; ve Resimleri</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Offline bildirimi -->
+    <div id="offlineToast" class="offline-toast">&#128225; İnternet bağlantısı yok</div>
+
+    <script>
+        // Aynı pencerede yönlendirme
+        function goTo(page) {
+            window.location.href = page;
+        }
+
+        // Dış link - yeni sekmede aç
+        function openExternal(url) {
+            window.open(url, '_blank');
+        }
+
+        // Vaka No git
+        function goToVaka() {
+            var id = document.getElementById('RecordId').value;
+            if (id && !isNaN(parseInt(id))) {
+                window.open('https://uys.edelkrone.com/Manufacturing/Quality/Details/' + id, '_blank');
+            } else {
+                alert('Lütfen geçerli bir numara girin.');
+            }
+        }
+
+        // Hamburger menü işlevleri
+        const panel = document.getElementById('hamburgerPanel');
+        const overlay = document.getElementById('hamburgerOverlay');
+        const openBtn = document.getElementById('hamburgerBtn');
+        const closeBtn = document.getElementById('hamburgerCloseBtn');
+
+        function openMenu() {
+            panel.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            panel.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        openBtn.addEventListener('click', openMenu);
+        closeBtn.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu);
+
+        // Alt menü (Atamalar) aç/kapa
+        const atamalarParent = document.getElementById('atamalarParent');
+        const atamalarSubmenu = document.getElementById('atamalarSubmenu');
+        const atamalarArrow = document.getElementById('atamalarArrow');
+
+        atamalarParent.addEventListener('click', function(e) {
+            e.stopPropagation();
+            atamalarSubmenu.classList.toggle('open');
+            atamalarArrow.classList.toggle('open');
+        });
+
+        // Enter tuşu ile Vaka No gönderme
+        document.getElementById('RecordId').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                goToVaka();
+            }
+        });
+
+        // Offline bildirimi
+        function showOfflineMessage() {
+            const toast = document.getElementById('offlineToast');
+            if (toast) {
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        window.addEventListener('online', () => {
+            console.log('Çevrimiçi oldu');
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log('Çevrimdışı oldu');
+            showOfflineMessage();
+        });
+
+        if (!navigator.onLine) {
+            showOfflineMessage();
+        }
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => {
+                    console.log('✅ Service Worker kaydedildi:', reg.scope);
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('🔄 Yeni güncelleme mevcut, sayfayı yenileyin');
+                            }
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.log('❌ Service Worker hatası:', err);
+                });
+            
+            navigator.serviceWorker.ready.then(() => {
+                console.log('🎯 Service Worker aktif ve hazır');
+            });
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('📱 PWA kurulumu mümkün');
+        });
+    </script>
+</body>
+</html>
